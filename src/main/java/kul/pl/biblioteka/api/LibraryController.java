@@ -5,15 +5,15 @@ import kul.pl.biblioteka.model.LibraryBook;
 import kul.pl.biblioteka.service.LibraryService;
 import kul.pl.biblioteka.utils.SortSetting;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+
+import org.springframework.data.domain.Sort;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
-@Controller
+@RestController
 @RequestMapping("api/library/books")
 public class LibraryController {
     private final LibraryService service;
@@ -23,11 +23,18 @@ public class LibraryController {
         this.service = service;
     }
 
-    @GetMapping()
-    public List<LibraryBook> getBooks(@NotNull @RequestParam("limit") int limit, @NotNull @RequestParam("page") int page, @RequestParam("sort") String sort){
+    @GetMapping
+    public List<LibraryBook> getBooks(@RequestParam(value = "limit") int limit,
+                                      @RequestParam(value = "page") int page,
+                                      @RequestParam(value = "sort") SortSetting sort,
+                                      @RequestParam(value = "order", required = false) Sort.Direction direction)
+    {
         int offset = page * limit;
-        SortSetting sortSetting = SortSetting.valueOf(sort);
-        return service.getBooks(sortSetting, offset, limit);
+        return service.getBooks(offset, limit, sort, Objects.requireNonNullElse(direction, Sort.Direction.ASC));
     }
 
+    @GetMapping(path = "/id/{id}")
+    public Optional<LibraryBook> getBookById(@PathVariable("id") int id){
+        return service.getBookById(id);
+    }
 }

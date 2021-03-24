@@ -2,6 +2,7 @@ package kul.pl.biblioteka.utils;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.lang.NonNullApi;
 
 import java.util.Objects;
 
@@ -10,8 +11,7 @@ public class LibraryPage implements Pageable {
     private int offset;
     private final Sort sort;
 
-
-
+    
     public LibraryPage(int offset, int limit, Sort sort) {
         if (offset < 0) {
             throw new IllegalArgumentException("Offset index must not be less than zero!");
@@ -63,7 +63,6 @@ public class LibraryPage implements Pageable {
     public LibraryPage previous() {
         return hasPrevious() ? new LibraryPage((int) (getOffset() - getPageSize()), getPageSize(), getSort()) : this;
     }
-
 
     @Override
     public Pageable previousOrFirst() {

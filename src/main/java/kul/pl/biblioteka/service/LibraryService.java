@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class LibraryService {
@@ -20,10 +21,13 @@ public class LibraryService {
         this.bookRepository = bookRepository;
     }
 
-    public List<LibraryBook> getBooks(SortSetting sort, int offset, int limit){
-        Sort sortMethod = Sort.by(sort.toString());
-        Pageable pageable = new LibraryPage(offset, limit, sortMethod);
 
+    public List<LibraryBook> getBooks(int offset, int limit, SortSetting sort, Sort.Direction direction){
+        Pageable pageable = new LibraryPage(offset, limit, direction, sort.toString());
         return bookRepository.findAll(pageable).toList();
+    }
+
+    public Optional<LibraryBook> getBookById(int id){
+        return bookRepository.findById(id);
     }
 }

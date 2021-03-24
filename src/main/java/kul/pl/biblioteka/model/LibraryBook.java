@@ -11,25 +11,27 @@ import java.util.Date;
 public class LibraryBook {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private final int id;
+    private int id;
 
     @Column
-    private final String title;
+    private String title;
+    @Column(name = "author")
+    private String authors;
     @Column
-    private final String authors;
+    private double rating;
     @Column
-    private final double rating;
+    private double popularity;
     @Column
-    private final double popularity;
+    private int pages;
     @Column
-    private final int pages;
+    private Date year;
     @Column
-    private final Date year;
+    private String publisher;
     @Column
-    private final String publisher;
-    @Column
-    private final String imageUrl;
+    private String imageUrl;
 
+    public LibraryBook() {
+    }
 
     public LibraryBook(@JsonProperty("id") int id,
                        @JsonProperty("title") String title,
