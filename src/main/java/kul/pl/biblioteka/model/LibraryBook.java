@@ -3,19 +3,33 @@ package kul.pl.biblioteka.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.persistence.*;
 import java.util.Date;
 
+@Entity
+@Table(name = "books")
 public class LibraryBook {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private final int id;
+
+    @Column
     private final String title;
+    @Column
     private final String authors;
+    @Column
     private final double rating;
+    @Column
     private final double popularity;
+    @Column
     private final int pages;
+    @Column
     private final Date year;
+    @Column
     private final String publisher;
+    @Column
     private final String imageUrl;
-    private final boolean access;
+
 
     public LibraryBook(@JsonProperty("id") int id,
                        @JsonProperty("title") String title,
@@ -25,8 +39,7 @@ public class LibraryBook {
                        @JsonProperty("pages") int pages,
                        @JsonProperty("year") Date year,
                        @JsonProperty("publisher") String publisher,
-                       @JsonProperty("imageUrl") String imageUrl,
-                       @JsonProperty("access") boolean access)
+                       @JsonProperty("imageUrl") String imageUrl)
     {
         this.id = id;
         this.title = title;
@@ -37,7 +50,6 @@ public class LibraryBook {
         this.year = year;
         this.publisher = publisher;
         this.imageUrl = imageUrl;
-        this.access = access;
     }
 
     public int getId() {
@@ -76,7 +88,4 @@ public class LibraryBook {
         return imageUrl;
     }
 
-    public boolean isAccess() {
-        return access;
-    }
 }
