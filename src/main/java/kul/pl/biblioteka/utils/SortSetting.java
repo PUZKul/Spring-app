@@ -8,7 +8,10 @@ public enum SortSetting {
     private final String name;
 
     SortSetting(String name) {
-        this.name = name;
+        if(name == null)
+            this.name = "title";
+        else
+            this.name = name;
     }
 
     public boolean equalsName(String otherName) {

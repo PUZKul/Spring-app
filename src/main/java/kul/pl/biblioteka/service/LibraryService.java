@@ -20,9 +20,9 @@ public class LibraryService {
         this.bookRepository = bookRepository;
     }
 
-    public List<LibraryBook> getBooks(SortSetting sort, int page, int limit){
+    public List<LibraryBook> getBooks(SortSetting sort, int offset, int limit){
         Sort sortMethod = Sort.by(sort.toString());
-        Pageable pageable = new LibraryPage(page * limit, limit, sortMethod);
+        Pageable pageable = new LibraryPage(offset, limit, sortMethod);
 
         return bookRepository.findAll(pageable).toList();
     }
