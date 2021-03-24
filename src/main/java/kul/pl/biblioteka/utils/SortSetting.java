@@ -3,15 +3,13 @@ package kul.pl.biblioteka.utils;
 public enum SortSetting {
     TITLE ("title"),
     RATING ("rating"),
-    YEAR ("year");
+    YEAR ("year"),
+    POPULARITY ("popularity");
 
     private final String name;
 
     SortSetting(String name) {
-        if(name == null)
-            this.name = "title";
-        else
-            this.name = name;
+        this.name = name;
     }
 
     public boolean equalsName(String otherName) {

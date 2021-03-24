@@ -5,14 +5,104 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Dokumentacja biblioteki PUZ">
     <meta name="author" content="Szymon">
-    <!--
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
-       <link rel="stylesheet" href="css/style.css">
-       -->
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="style.css">
+
     <title>Biblioteka API</title>
+
+    <script>
+      let closed = "Więcej";
+      let opened = "Zwiń";
+      function change(element){
+
+        var el = document.getElementById(element.id)
+        var text = el.innerHTML.trim();
+        if(text == closed) el.innerHTML = opened;
+        else el.innerHTML = closed;
+
+      }
+    </script>
 
 </head>
 <body>
-<h3>Biblioteka API</h3>
+    <div class="container min-with-container mb-5">
+    <div class="mb-5 mt-5 text-center ">
+        <h2>Lista metod</h2>
+    </div>
+    <section>
+        <div class="d-flex _h4 mb-3 navbar-expand-lg">
+
+            <div class="flex-grow-1 pe-5">Pobierz liste książek</div>
+            <div class="pe-5">
+                <div class=" collapse navbar-collapse "><small class="text-muted">/api/library/books</small></div>
+            </div>
+            <div>
+                <button class="btn btn-primary-lib" id="button1" onclick="change(this)" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="false" aria-controls="collapse1">Więcej</button>
+            </div>
+        </div>
+        <div class="collapse mb-3 " id="collapse1">
+            <div class="card card-body">
+                <h3>Opis</h3>
+                <p> Metoda ta przyjmuje 3 wymagane paremetry (limit, page, sort) oraz jeden parametr opcjionalny (order) </p>
+                <p>
+                    <b> limit </b> - liczba książek do pobrania (min 1, max 50)<br/>
+                    <b> page </b> - numer strony. Nie może być mniejszy od 0 <br/>
+                    <b> sort </b> - sortowanie po konkretnym polu książki. Dostepne wartości: <b>TITLE, RATING, YEAR, POPULARITY</b> <br/>
+                    <b> order </b> - parametr opcjonalny. Określa kierunek sortowania. Wartość domyślna (ASC). Dostepne wartości: <b>ASC, DESC</b> <br/>
+
+                </p>
+                <h3>Przykład</h3>
+                <p>
+                    <small class="text-muted h6"> api/library/books?limit=10&page=0&sort=TITLE </small>  Pobranie 10 ksiązek z pierwszej strony posortowanych po tytule od A do Z <br/>
+                    <small class="text-muted h6"> api/library/books?limit=10&page=1&sort=RATING&order=DESC </small>  Pobranie 10 ksiązek z drugiej strony posortowanych po ocenie od najwiekszej
+                </p>
+                <h3>Uwierzytelnienie</h3>
+                <p>Nie wymaga</p>
+                <h3>Typ zapytania</h3>
+                <p>GET</p>
+                <h3>Zwracana wartość</h3>
+                <p>Lista LibraryBook</p>
+                <h3>Wyjątki</h3>
+                <ul class="list-unstyled">
+                    <li>BAD_REQUEST (400) - najczęściej spowodowane błędnym parametrem</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+   <!--  Method 2  -->
+    <section>
+        <div class="d-flex _h4 mb-3 navbar-expand-lg">
+
+            <div class="flex-grow-1 pe-5">Pobierz książke po ID</div>
+            <div class="pe-5">
+                <div class=" collapse navbar-collapse "><small class="text-muted">/api/library/books/id/{id}</small></div>
+            </div>
+            <div>
+                <button class="btn btn-primary-lib" id="button2" onclick="change(this)" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2">Więcej</button>
+            </div>
+        </div>
+        <div class="collapse mb-3 " id="collapse2">
+            <div class="card card-body">
+                <h3>Opis</h3>
+                <p> Metoda zwraca jedną książe o podanym id w parametrze. W przypadku braku książki z podanym id zostaje zwrócony wyjątek</p>
+                <h3>Przykład</h3>
+                <p> <small class="text-muted h6"> api/library/books/id/<b>1</b> </small>  - Pobranie książki o id równym 1.</p>
+                <h3>Uwierzytelnienie</h3>
+                <p>Nie wymaga</p>
+                <h3>Typ zapytania</h3>
+                <p>GET</p>
+                <h3>Zwracana wartość</h3>
+                <p>Optional LibraryBook</a></p>
+                <h3>Wyjątki</h3>
+                <ul class="list-unstyled">
+                    <li>BAD_REQUEST (400) - najczęściej spowodowane błędnym parametrem</li>
+                    <li>NOT_FOUND (404) - Książka z podanym id nie istnieje w bazie</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+</div>
 </body>

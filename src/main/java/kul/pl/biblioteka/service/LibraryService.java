@@ -23,6 +23,8 @@ public class LibraryService {
 
 
     public List<LibraryBook> getBooks(int offset, int limit, SortSetting sort, Sort.Direction direction){
+        // TODO add top limit to {limit} parameter
+        System.out.println(sort.toString());
         Pageable pageable = new LibraryPage(offset, limit, direction, sort.toString());
         return bookRepository.findAll(pageable).toList();
     }
