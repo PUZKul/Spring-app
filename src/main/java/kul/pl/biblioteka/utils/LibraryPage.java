@@ -25,11 +25,9 @@ public class LibraryPage implements Pageable {
         this.sort = sort;
     }
 
-
     public LibraryPage(int offset, int limit, Sort.Direction direction, String... properties) {
         this(offset, limit, Sort.by(direction, properties));
     }
-
 
     public LibraryPage(int offset, int limit) {
         this(offset, limit, Sort.unsorted());

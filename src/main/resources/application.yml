@@ -5,4 +5,3 @@ app:
     password: 3c441beac58be30d0e883f8e7f505432dbcb49b2beb5ddd49956a871a812da68
     pool-size: 30
 
-server.error.include-message: always

@@ -1,17 +1,15 @@
 package kul.pl.biblioteka.api;
 
-import com.sun.istack.NotNull;
 import kul.pl.biblioteka.model.LibraryBook;
 import kul.pl.biblioteka.service.LibraryService;
 import kul.pl.biblioteka.utils.SortSetting;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("api/library/books")
@@ -23,8 +21,8 @@ public class LibraryController {
         this.service = service;
     }
 
-    @GetMapping
-    public List<LibraryBook> getBooks(@RequestParam(value = "limit") int limit,
+    @GetMapping()
+    public Page<LibraryBook> getBooks(@RequestParam(value = "limit") int limit,
                                       @RequestParam(value = "page") int page,
                                       @RequestParam(value = "sort") SortSetting sort,
                                       @RequestParam(value = "order", required = false) Sort.Direction direction)

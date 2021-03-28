@@ -4,6 +4,7 @@ package kul.pl.biblioteka.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -24,7 +25,7 @@ public class LibraryBook {
     @Column
     private int pages;
     @Column
-    private Date year;
+    private LocalDate year;
     @Column
     private String publisher;
     @Column
@@ -39,7 +40,7 @@ public class LibraryBook {
                        @JsonProperty("rating") double rating,
                        @JsonProperty("popularity") double popularity,
                        @JsonProperty("pages") int pages,
-                       @JsonProperty("year") Date year,
+                       @JsonProperty("year") LocalDate year,
                        @JsonProperty("publisher") String publisher,
                        @JsonProperty("imageUrl") String imageUrl)
     {
@@ -78,7 +79,7 @@ public class LibraryBook {
         return pages;
     }
 
-    public Date getYear() {
+    public LocalDate getYear() {
         return year;
     }
 
