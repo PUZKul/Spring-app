@@ -60,4 +60,9 @@ public class LibraryController {
         return service.searchBooks(offset, limit, titleQuery, authorQuery, publisherQuery);
     }
 
+    @GetMapping(path = "/discover/{limit}")
+    public Page<LibraryBook> discoverBooks(@PathVariable("limit") int limit){
+        return service.discoverBooks(limit);
+    }
+
 }

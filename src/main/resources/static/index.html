@@ -72,7 +72,7 @@
         </div>
     </section>
 
-   <!--  Method 2  -->
+   <!--  Method 2 Get book by ID -->
     <section>
         <div class="d-flex _h4 mb-3 navbar-expand-lg">
 
@@ -105,7 +105,7 @@
         </div>
     </section>
 
-    <!--  Method 3  -->
+    <!--  Method 3 Search books -->
     <section>
         <div class="d-flex _h4 mb-3 navbar-expand-lg">
 
@@ -120,19 +120,57 @@
         <div class="collapse mb-3 " id="collapse3">
             <div class="card card-body">
                 <h3>Description</h3>
-                <p> This method takes 2 required parameters (limit, page) and up to 3 additional parameters (title, author, publisher). At least one additional parameter must be given</p>
+                <p> This method takes 2 required parameters (limit, page) and up to 3 additional parameters (title, author, publisher). At least one additional parameter must be given. Additional parameters takes string as argument and letters are not case-sensitive</p>
                 <p>
                     <b> limit </b> - number of books to request (min 1, max 50)<br/>
                     <b> page </b> - page number. It must not be less than 0 <br/>
-                    <b> title </b> - It search given fraze in the title of books. Letters are not case-sensitive <br/>
-                    <b> author </b> - It specifies the sorting direction. Default value (ASC). Available values: <b>ASC, DESC</b>. <br/>
-                    <b> publisher </b> - It specifies the sorting direction. Default value (ASC). Available values: <b>ASC, DESC</b>. <br/>
+                    <b> title </b> - it search given fraze in the title of books <br/>
+                    <b> author </b> - it search books with given author <br/>
+                    <b> publisher </b> - it shearch books by given publisher name <br/>
 
                 </p>
                 <h3>Example</h3>
                 <p>
-                    <small class="text-muted h6"> api/library/books?limit=10&page=0&sort=TITLE </small>  Get 10 books from the first page, sorted by title from A to Z <br/>
-                    <small class="text-muted h6"> api/library/books?limit=10&page=1&sort=RATING&order=DESC </small>  Get 10 books from the second page, sorted by rating from the highest.
+                    <small class="text-muted h6"> api/library/books?limit=10&page=0&title=harry </small> Get up to 10 books from the first page, that contains fraze <i>harry</i> in the title <br/>
+                    <small class="text-muted h6"> api/library/books?limit=10&page=0&author=Adam </small> Get up to 10 books from the first page, that author name is <i>Adam</i>.
+                    <small class="text-muted h6"> api/library/books?limit=10&page=0&author=Adam&publisher=Crown </small> Get up to 10 books from the first page, that author name is <i>Adam</i> and publisher name is <i>Crown</i>.
+                </p>
+                <h3>Authentication</h3>
+                <p>Doesn't require</p>
+                <h3>Request method</h3>
+                <p>GET</p>
+                <h3>Return value</h3>
+                <p>Page object with books</p>
+                <h3>Errors</h3>
+                <ul class="list-unstyled">
+                    <li>BAD_REQUEST (400) - usually caused by an incorrect parameter</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+     <!--  Method 3  -->
+     <section>
+        <div class="d-flex _h4 mb-3 navbar-expand-lg">
+
+            <div class="flex-grow-1 pe-5">Discover books</div>
+            <div class="pe-5">
+                <div class=" collapse navbar-collapse "><small class="text-muted">/api/library/books/discover/{limit}</small></div>
+            </div>
+            <div>
+                <button class="btn btn-primary-lib" id="button4" onclick="change(this)" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4" aria-expanded="false" aria-controls="collapse4">Więcej</button>
+            </div>
+        </div>
+        <div class="collapse mb-3 " id="collapse4">
+            <div class="card card-body">
+                <h3>Description</h3>
+                <p> This method returns recommended books with the highest rating. It might be usefull for users that are looking for new interesting books to read. Method takes one parameter - limit</p>
+                <p>
+                    <b> limit </b> - number of books to request (min 1, max 50)<br/>
+                </p>
+                <h3>Example</h3>
+                <p>
+                    <small class="text-muted h6"> api/library/books/discover/10</small> Get 10 recommended books <br/>
                 </p>
                 <h3>Authentication</h3>
                 <p>Doesn't require</p>

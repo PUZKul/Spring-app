@@ -1,10 +1,14 @@
 package kul.pl.biblioteka.utils;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.lang.NonNullApi;
 
 import java.util.Objects;
+
+import static kul.pl.biblioteka.utils.Constants.LIMIT;
 
 public class LibraryPage implements Pageable {
     private int limit;
@@ -13,13 +17,12 @@ public class LibraryPage implements Pageable {
 
     
     public LibraryPage(int offset, int limit, Sort sort) {
-        if (offset < 0) {
+        if (offset < 0)
             throw new IllegalArgumentException("Offset index must not be less than zero!");
-        }
-
-        if (limit < 1) {
+        if (limit < 1)
             throw new IllegalArgumentException("Limit must not be less than one!");
-        }
+        if(limit > 50 )
+            throw new IllegalArgumentException(String.format("Given limit (%d) cannot be greater than %d", limit, LIMIT));
         this.limit = limit;
         this.offset = offset;
         this.sort = sort;
@@ -96,4 +99,6 @@ public class LibraryPage implements Pageable {
     public String toString() {
         return "limit: " + limit + "offset: " + offset + "sort: " + sort;
     }
+
+
 }
