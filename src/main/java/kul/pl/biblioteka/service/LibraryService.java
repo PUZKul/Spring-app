@@ -1,5 +1,6 @@
 package kul.pl.biblioteka.service;
 
+import kul.pl.biblioteka.exception.ResourceNotFoundException;
 import kul.pl.biblioteka.model.LibraryBook;
 import kul.pl.biblioteka.model.PageHolder;
 import kul.pl.biblioteka.repository.BookCopiesRepository;
@@ -51,10 +52,13 @@ public class LibraryService {
     }
 
     public Optional<LibraryBook> getBookById(long bookId){
-        return bookRepository.findById(bookId);
+        Optional<LibraryBook> book = bookRepository.findById(bookId);
+        if(book.isEmpty()) throw new ResourceNotFoundException("Book with given ID does not exist in database");
+        else return book;
     }
 
     public long availableCopies(long bookId){
-       return copiesRepository.availableCopies(bookId);
+        if(!bookRepository.existsById(bookId)) throw new ResourceNotFoundException("Book with given ID does not exist in database");
+        return copiesRepository.availableCopies(bookId);
     }
 }

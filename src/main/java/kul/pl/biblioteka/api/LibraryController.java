@@ -33,11 +33,13 @@ public class LibraryController {
 
     @GetMapping(path = "/id/{id}")
     public Optional<LibraryBook> getBookById(@PathVariable("id") long id){
+        if(id < 0) throw new IllegalArgumentException("Id cannot not be less than 0");
         return service.getBookById(id);
     }
 
-    @GetMapping(path = "/copies/{id}")
+    @GetMapping(path = "/copies/available/{id}")
     public long availableCopies(@PathVariable("id") long bookId){
+        if(bookId < 0) throw new IllegalArgumentException("Id cannot not be less than 0");
         return service.availableCopies(bookId);
     }
 

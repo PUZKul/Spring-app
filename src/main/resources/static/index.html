@@ -87,7 +87,7 @@
         <div class="collapse mb-3 " id="collapse2">
             <div class="card card-body">
                 <h3>Description</h3>
-                <p> The method returns one book with the given id. If the book with the given id is not found then it throws an exception</p>
+                <p> The method returns one book with the given id. If the book is not found then it throws an exception</p>
                 <h3>Example</h3>
                 <p> <small class="text-muted h6"> api/library/books/id/<b>1</b> </small>  - Get a book with id equals 1</p>
                 <h3>Authentication</h3>
@@ -149,7 +149,7 @@
         </div>
     </section>
 
-     <!--  Method 3  -->
+     <!--  Method 4 Discover books -->
      <section>
         <div class="d-flex _h4 mb-3 navbar-expand-lg">
 
@@ -181,6 +181,44 @@
                 <h3>Errors</h3>
                 <ul class="list-unstyled">
                     <li>BAD_REQUEST (400) - usually caused by an incorrect parameter</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!--  Method 5  -->
+    <section>
+        <div class="d-flex _h4 mb-3 navbar-expand-lg">
+
+            <div class="flex-grow-1 pe-5">Available book copies</div>
+            <div class="pe-5">
+                <div class=" collapse navbar-collapse "><small class="text-muted">/api/library/books/copies/available/{id}</small></div>
+            </div>
+            <div>
+                <button class="btn btn-primary-lib" id="button5" onclick="change(this)" type="button" data-bs-toggle="collapse" data-bs-target="#collapse5" aria-expanded="false" aria-controls="collapse5">Więcej</button>
+            </div>
+        </div>
+        <div class="collapse mb-3 " id="collapse5">
+            <div class="card card-body">
+                <h3>Description</h3>
+                <p> Method returns number of available copies</p>
+                <p>
+                    <b> id </b> - id of book<br/>
+                </p>
+                <h3>Example</h3>
+                <p>
+                    <small class="text-muted h6"> api/library/books/copies/available/960</small> Get number of available copies of book with id 960<br/>
+                </p>
+                <h3>Authentication</h3>
+                <p>Doesn't require</p>
+                <h3>Request method</h3>
+                <p>GET</p>
+                <h3>Return value</h3>
+                <p>int</p>
+                <h3>Errors</h3>
+                <ul class="list-unstyled">
+                    <li>BAD_REQUEST (400) - usually caused by an incorrect parameter</li>
+                    <li>NOT_FOUND (404) - book with given ID doesnt not exist in database</li>
                 </ul>
             </div>
         </div>

@@ -15,17 +15,29 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(value = {IllegalArgumentException.class})
     public ResponseEntity<Object> handlerApiRequestException(HttpServletRequest req, IllegalArgumentException e){
-        HttpStatus badRequest = HttpStatus.BAD_REQUEST;
+        HttpStatus status = HttpStatus.BAD_REQUEST;
 
         ApiException exception = new ApiException(
                 ZonedDateTime.now(ZoneId.of("Z")),
-                badRequest.value(),
-                badRequest.name(),
+                status.value(),
+                status.name(),
                 e.getMessage(),
                 req.getRequestURI()
         );
-        return new ResponseEntity<>(exception, badRequest);
+        return new ResponseEntity<>(exception, status);
     }
 
+    @ExceptionHandler(value = {ResourceNotFoundException.class})
+    public ResponseEntity<Object> handlerResourceNotFoundException(HttpServletRequest req, ResourceNotFoundException e){
 
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        ApiException exception = new ApiException(
+                ZonedDateTime.now(ZoneId.of("Z")),
+                status.value(),
+                status.name(),
+                e.getMessage(),
+                req.getRequestURI()
+        );
+        return new ResponseEntity<>(exception, status);
+    }
 }
