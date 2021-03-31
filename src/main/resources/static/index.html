@@ -34,9 +34,9 @@
     <section>
         <div class="d-flex _h4 mb-3 navbar-expand-lg">
 
-            <div class="flex-grow-1 pe-5">Pobierz liste książek</div>
+            <div class="flex-grow-1 pe-5">Get books</div>
             <div class="pe-5">
-                <div class=" collapse navbar-collapse "><small class="text-muted">/api/library/books</small></div>
+                <div class=" collapse navbar-collapse "><small class="text-muted">/api/library/books?</small></div>
             </div>
             <div>
                 <button class="btn btn-primary-lib" id="button1" onclick="change(this)" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="false" aria-controls="collapse1">Więcej</button>
@@ -44,29 +44,29 @@
         </div>
         <div class="collapse mb-3 " id="collapse1">
             <div class="card card-body">
-                <h3>Opis</h3>
-                <p> Metoda ta przyjmuje 3 wymagane paremetry (limit, page, sort) oraz jeden parametr opcjionalny (order) </p>
+                <h3>Description</h3>
+                <p> This method takes 3 required parameters (limit, page, sort) and one optional parameter (order) </p>
                 <p>
-                    <b> limit </b> - liczba książek do pobrania (min 1, max 50)<br/>
-                    <b> page </b> - numer strony. Nie może być mniejszy od 0 <br/>
-                    <b> sort </b> - sortowanie po konkretnym polu książki. Dostepne wartości: <b>TITLE, RATING, YEAR, POPULARITY</b> <br/>
-                    <b> order </b> - parametr opcjonalny. Określa kierunek sortowania. Wartość domyślna (ASC). Dostepne wartości: <b>ASC, DESC</b> <br/>
+                    <b> limit </b> - number of books to request (min 1, max 50)<br/>
+                    <b> page </b> - page number. It must not be less than 0 <br/>
+                    <b> sort </b> - sort by a specific book field. Available values: <b>TITLE, RATING, YEAR, POPULARITY</b> <br/>
+                    <b> order </b> - optional parameter. It specifies the sorting direction. Default value (ASC). Available values: <b>ASC, DESC</b>. <br/>
 
                 </p>
-                <h3>Przykład</h3>
+                <h3>Example</h3>
                 <p>
-                    <small class="text-muted h6"> api/library/books?limit=10&page=0&sort=TITLE </small>  Pobranie 10 ksiązek z pierwszej strony posortowanych po tytule od A do Z <br/>
-                    <small class="text-muted h6"> api/library/books?limit=10&page=1&sort=RATING&order=DESC </small>  Pobranie 10 ksiązek z drugiej strony posortowanych po ocenie od najwiekszej
+                    <small class="text-muted h6"> api/library/books?limit=10&page=0&sort=TITLE </small>  Get 10 books from the first page, sorted by title from A to Z <br/>
+                    <small class="text-muted h6"> api/library/books?limit=10&page=1&sort=RATING&order=DESC </small>  Get 10 books from the second page, sorted by rating from the highest.
                 </p>
-                <h3>Uwierzytelnienie</h3>
-                <p>Nie wymaga</p>
-                <h3>Typ zapytania</h3>
+                <h3>Authentication</h3>
+                <p>Doesn't require</p>
+                <h3>Request method</h3>
                 <p>GET</p>
-                <h3>Zwracana wartość</h3>
-                <p>Lista LibraryBook</p>
-                <h3>Wyjątki</h3>
+                <h3>Return value</h3>
+                <p>Page object with books</p>
+                <h3>Errors</h3>
                 <ul class="list-unstyled">
-                    <li>BAD_REQUEST (400) - najczęściej spowodowane błędnym parametrem</li>
+                    <li>BAD_REQUEST (400) - usually caused by an incorrect parameter</li>
                 </ul>
             </div>
         </div>
@@ -76,7 +76,7 @@
     <section>
         <div class="d-flex _h4 mb-3 navbar-expand-lg">
 
-            <div class="flex-grow-1 pe-5">Pobierz książke po ID</div>
+            <div class="flex-grow-1 pe-5">Get book by ID</div>
             <div class="pe-5">
                 <div class=" collapse navbar-collapse "><small class="text-muted">/api/library/books/id/{id}</small></div>
             </div>
@@ -86,23 +86,67 @@
         </div>
         <div class="collapse mb-3 " id="collapse2">
             <div class="card card-body">
-                <h3>Opis</h3>
-                <p> Metoda zwraca jedną książe o podanym id w parametrze. W przypadku braku książki z podanym id zostaje zwrócony wyjątek</p>
-                <h3>Przykład</h3>
-                <p> <small class="text-muted h6"> api/library/books/id/<b>1</b> </small>  - Pobranie książki o id równym 1.</p>
-                <h3>Uwierzytelnienie</h3>
-                <p>Nie wymaga</p>
-                <h3>Typ zapytania</h3>
+                <h3>Description</h3>
+                <p> The method returns one book with the given id. If the book with the given id is not found then it throws an exception</p>
+                <h3>Example</h3>
+                <p> <small class="text-muted h6"> api/library/books/id/<b>1</b> </small>  - Get a book with id equals 1</p>
+                <h3>Authentication</h3>
+                <p>Doesn't require</p>
+                <h3>Request method</h3>
                 <p>GET</p>
-                <h3>Zwracana wartość</h3>
+                <h3>Return value</h3>
                 <p>Optional LibraryBook</a></p>
-                <h3>Wyjątki</h3>
+                <h3>Errors</h3>
                 <ul class="list-unstyled">
-                    <li>BAD_REQUEST (400) - najczęściej spowodowane błędnym parametrem</li>
-                    <li>NOT_FOUND (404) - Książka z podanym id nie istnieje w bazie</li>
+                    <li>BAD_REQUEST (400) - usually caused by an incorrect parameter</li>
+                    <li>NOT_FOUND (404) - book with given id does not exist in database</li>
                 </ul>
             </div>
         </div>
     </section>
+
+    <!--  Method 3  -->
+    <section>
+        <div class="d-flex _h4 mb-3 navbar-expand-lg">
+
+            <div class="flex-grow-1 pe-5">Search books</div>
+            <div class="pe-5">
+                <div class=" collapse navbar-collapse "><small class="text-muted">/api/library/books/search?</small></div>
+            </div>
+            <div>
+                <button class="btn btn-primary-lib" id="button3" onclick="change(this)" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3" aria-expanded="false" aria-controls="collapse3">Więcej</button>
+            </div>
+        </div>
+        <div class="collapse mb-3 " id="collapse3">
+            <div class="card card-body">
+                <h3>Description</h3>
+                <p> This method takes 2 required parameters (limit, page) and up to 3 additional parameters (title, author, publisher). At least one additional parameter must be given</p>
+                <p>
+                    <b> limit </b> - number of books to request (min 1, max 50)<br/>
+                    <b> page </b> - page number. It must not be less than 0 <br/>
+                    <b> title </b> - It search given fraze in the title of books. Letters are not case-sensitive <br/>
+                    <b> author </b> - It specifies the sorting direction. Default value (ASC). Available values: <b>ASC, DESC</b>. <br/>
+                    <b> publisher </b> - It specifies the sorting direction. Default value (ASC). Available values: <b>ASC, DESC</b>. <br/>
+
+                </p>
+                <h3>Example</h3>
+                <p>
+                    <small class="text-muted h6"> api/library/books?limit=10&page=0&sort=TITLE </small>  Get 10 books from the first page, sorted by title from A to Z <br/>
+                    <small class="text-muted h6"> api/library/books?limit=10&page=1&sort=RATING&order=DESC </small>  Get 10 books from the second page, sorted by rating from the highest.
+                </p>
+                <h3>Authentication</h3>
+                <p>Doesn't require</p>
+                <h3>Request method</h3>
+                <p>GET</p>
+                <h3>Return value</h3>
+                <p>Page object with books</p>
+                <h3>Errors</h3>
+                <ul class="list-unstyled">
+                    <li>BAD_REQUEST (400) - usually caused by an incorrect parameter</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
 </div>
 </body>

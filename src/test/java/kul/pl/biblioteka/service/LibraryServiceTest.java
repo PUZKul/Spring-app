@@ -1,28 +1,15 @@
 package kul.pl.biblioteka.service;
 
-import kul.pl.biblioteka.model.LibraryBook;
+import kul.pl.biblioteka.repository.BookCopiesRepository;
 import kul.pl.biblioteka.repository.BookRepository;
-import kul.pl.biblioteka.utils.LibraryPage;
-import kul.pl.biblioteka.utils.SortSetting;
-import org.assertj.core.api.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.BDDMockito.given;
 
 class LibraryServiceTest {
 
@@ -31,10 +18,13 @@ class LibraryServiceTest {
     @Mock
     private BookRepository bookRepository;
 
+    @Mock
+    private BookCopiesRepository copiesRepository;
+
     @BeforeEach
     public void before(){
         MockitoAnnotations.openMocks(this);
-        this.service = new LibraryService(bookRepository);
+        this.service = new LibraryService(bookRepository, copiesRepository);
     }
 
     @Test

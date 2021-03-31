@@ -32,7 +32,32 @@ public class LibraryController {
     }
 
     @GetMapping(path = "/id/{id}")
-    public Optional<LibraryBook> getBookById(@PathVariable("id") int id){
+    public Optional<LibraryBook> getBookById(@PathVariable("id") long id){
         return service.getBookById(id);
     }
+
+    @GetMapping(path = "/copies/{id}")
+    public long availableCopies(@PathVariable("id") long bookId){
+        return service.availableCopies(bookId);
+    }
+
+
+    @GetMapping(path = "/search")
+    public Page<LibraryBook> searchBooks(@RequestParam(value = "limit") int limit,
+                                         @RequestParam(value = "page") int page,
+                                         @RequestParam(value = "title", required = false) String title,
+                                         @RequestParam(value = "author", required = false) String author,
+                                         @RequestParam(value = "publisher", required = false) String publisher){
+
+        if(title==null && author == null && publisher == null)
+            throw new IllegalArgumentException("At least one parameter (title, author or publisher) is required");
+
+        int offset = page * limit;
+        String titleQuery = Objects.requireNonNullElse(title, "");
+        String authorQuery = Objects.requireNonNullElse(author, "");
+        String publisherQuery = Objects.requireNonNullElse(publisher, "");
+
+        return service.searchBooks(offset, limit, titleQuery, authorQuery, publisherQuery);
+    }
+
 }

@@ -12,7 +12,7 @@ import java.util.Date;
 public class LibraryBook {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
 
     @Column
     private String title;
@@ -34,7 +34,7 @@ public class LibraryBook {
     public LibraryBook() {
     }
 
-    public LibraryBook(@JsonProperty("id") int id,
+    public LibraryBook(@JsonProperty("id") long id,
                        @JsonProperty("title") String title,
                        @JsonProperty("authors") String authors,
                        @JsonProperty("rating") double rating,
@@ -55,7 +55,7 @@ public class LibraryBook {
         this.imageUrl = imageUrl;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 

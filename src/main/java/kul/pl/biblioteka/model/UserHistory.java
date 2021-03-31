@@ -8,15 +8,15 @@ import java.util.UUID;
 public class  UserHistory {
     private final UUID userId;
     private final String title;
-    private final int bookId;
-    private final int bookCopyId;
+    private final long bookId;
+    private final long bookCopyId;
     private final Date borrowDate;
     private final Date returnedDate;
 
     public UserHistory(@JsonProperty("userId") UUID userId,
                        @JsonProperty("title") String title,
-                       @JsonProperty("bookId") int bookId,
-                       @JsonProperty("bookCopyId") int bookCopyId,
+                       @JsonProperty("bookId") long bookId,
+                       @JsonProperty("bookCopyId") long bookCopyId,
                        @JsonProperty("borrowDate") Date borrowDate,
                        @JsonProperty("returnedDate") Date returnedDate) {
         this.userId = userId;
@@ -35,11 +35,11 @@ public class  UserHistory {
         return title;
     }
 
-    public int getBookId() {
+    public long getBookId() {
         return bookId;
     }
 
-    public int getBookCopyId() {
+    public long getBookCopyId() {
         return bookCopyId;
     }
 
