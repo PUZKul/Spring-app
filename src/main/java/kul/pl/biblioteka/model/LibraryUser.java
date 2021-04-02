@@ -5,18 +5,23 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.UUID;
 
 public class LibraryUser {
-    private final UUID id;
-    private final String username;
-    private final String email;
-    private final int points;
+    private UUID id;
+    private String username;
+    private String email;
+    private int points;
+    private int warnings;
+    private boolean banned;
+    private String role;
+
+    public LibraryUser() {
+    }
 
     public LibraryUser(@JsonProperty("id") UUID id,
                        @JsonProperty("username") String username,
-                       @JsonProperty("email") String email, int points) {
+                       @JsonProperty("email") String email) {
         this.id = id;
         this.username = username;
         this.email = email;
-        this.points = points;
     }
 
     public int getPoints() {
@@ -33,5 +38,17 @@ public class LibraryUser {
 
     public String getEmail() {
         return email;
+    }
+
+    public int getWarnings() {
+        return warnings;
+    }
+
+    public boolean isBanned() {
+        return banned;
+    }
+
+    public String getRole() {
+        return role;
     }
 }
