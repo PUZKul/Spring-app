@@ -1,12 +1,12 @@
 package kul.pl.biblioteka.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.UUID;
+
+
 @Entity
 @Table(name = "users")
 public class LibraryUser {
@@ -30,17 +30,6 @@ public class LibraryUser {
     private String role;
     @Column
     private String comment;
-
-    public LibraryUser() {
-    }
-
-    public LibraryUser(@JsonProperty("username") String username,
-                       @JsonProperty("email") String email,
-                       @JsonProperty("password") String password) {
-        this.username = username;
-        this.email = email;
-        this.password = password;
-    }
 
     public int getPoints() {
         return points;
@@ -80,5 +69,33 @@ public class LibraryUser {
 
     public String getComment() {
         return comment;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public void setEnabled(boolean enabled) {
+        isEnabled = enabled;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public void setBanned(boolean banned) {
+        isBanned = banned;
     }
 }
