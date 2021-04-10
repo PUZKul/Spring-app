@@ -11,6 +11,6 @@ import java.util.UUID;
 
 public interface LibraryUserRepository extends CrudRepository<LibraryUser, UUID> {
 
-    @Query("SELECT u FROM User u WHERE u.username = :username")
+    @Query("SELECT u FROM LibraryUser u WHERE u.username = :username")
     LibraryUser getUserByUsername(@Param("username") String username);
 }

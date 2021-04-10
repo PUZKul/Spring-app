@@ -18,6 +18,8 @@ public class LibraryUser {
     private String password;
     @Column
     private String email;
+    @Column(name = "max_books")
+    private int maxBooks;
     @Column
     private int points;
     @Column
@@ -30,6 +32,22 @@ public class LibraryUser {
     private String role;
     @Column
     private String comment;
+
+    public LibraryUser() {
+    }
+
+    public LibraryUser(UUID id, String username, String password, String email, int maxBooks, int points, int warnings, boolean isBanned, boolean isEnabled, String role) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.maxBooks = maxBooks;
+        this.points = points;
+        this.warnings = warnings;
+        this.isBanned = isBanned;
+        this.isEnabled = isEnabled;
+        this.role = role;
+    }
 
     public int getPoints() {
         return points;
@@ -49,6 +67,10 @@ public class LibraryUser {
 
     public int getWarnings() {
         return warnings;
+    }
+
+    public int getMaxBooks() {
+        return maxBooks;
     }
 
     public boolean isBanned() {
@@ -71,31 +93,4 @@ public class LibraryUser {
         return comment;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public void setEnabled(boolean enabled) {
-        isEnabled = enabled;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public void setBanned(boolean banned) {
-        isBanned = banned;
-    }
 }
