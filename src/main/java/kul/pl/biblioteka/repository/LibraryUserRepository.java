@@ -13,4 +13,7 @@ public interface LibraryUserRepository extends CrudRepository<LibraryUser, UUID>
 
     @Query("SELECT u FROM LibraryUser u WHERE u.username = :username")
     LibraryUser getUserByUsername(@Param("username") String username);
+
+    @Query(value = "SELECT count(*) FROM users u WHERE email = ?", nativeQuery = true)
+    int isEmailExist(String email);
 }

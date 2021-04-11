@@ -9,6 +9,7 @@ import kul.pl.biblioteka.utils.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityExistsException;
 import java.util.UUID;
 
 @Service
@@ -29,6 +30,8 @@ public class UserLibraryService {
         if(!Validator.password(newUser.getPassword()))
             throw new IllegalArgumentException("Given password is invalid");
 
+        if(userRepository.getUserByUsername(newUser.getUsername()) != null) throw new EntityExistsException("User with given username already exist");
+        if(userRepository.isEmailExist(newUser.getEmail()) > 0) throw new EntityExistsException("User with given email already exist");
 
         LibraryUser user = setNewUser(newUser);
 
