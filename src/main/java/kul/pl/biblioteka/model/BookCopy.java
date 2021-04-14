@@ -1,8 +1,11 @@
 package kul.pl.biblioteka.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.annotations.Formula;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "book_copies")
@@ -11,10 +14,8 @@ public class BookCopy {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @ManyToOne
-    @JoinColumn(name = "book_id")
-    private LibraryBook libraryBook;
-
+    @Column(name = "book_id")
+    private long bookId;
     @Column
     private boolean borrowed;
     @Column
@@ -26,12 +27,15 @@ public class BookCopy {
     @Column
     private String comment;
 
+    @Formula("(select b.date_issued from borrow b where b.book_copy_id = id and b.date_return is null)")
+    private Date dateIssued;
+
     public long getId() {
         return id;
     }
 
-    public LibraryBook getLibraryBook() {
-        return libraryBook;
+    public long getBookId() {
+        return bookId;
     }
 
     public boolean isBorrowed() {
@@ -52,5 +56,9 @@ public class BookCopy {
 
     public String getComment() {
         return comment;
+    }
+
+    public Date getDateIssued() {
+        return dateIssued;
     }
 }
