@@ -131,9 +131,9 @@
                 </p>
                 <h3>Example</h3>
                 <p>
-                    <small class="text-muted h6"> api/library/books?limit=10&page=0&title=harry </small> Get up to 10 books from the first page, that contains fraze <i>harry</i> in the title <br/>
-                    <small class="text-muted h6"> api/library/books?limit=10&page=0&author=Adam </small> Get up to 10 books from the first page, that author name is <i>Adam</i>.
-                    <small class="text-muted h6"> api/library/books?limit=10&page=0&author=Adam&publisher=Crown </small> Get up to 10 books from the first page, that author name is <i>Adam</i> and publisher name is <i>Crown</i>.
+                    <small class="text-muted h6"> api/library/books/search?limit=10&page=0&title=harry </small> Get up to 10 books from the first page, that contains fraze <i>harry</i> in the title <br/>
+                    <small class="text-muted h6"> api/library/books/search?limit=10&page=0&author=Adam </small> Get up to 10 books from the first page, that author name is <i>Adam</i>. <br/>
+                    <small class="text-muted h6"> api/library/books/search?limit=10&page=0&author=Adam&publisher=Crown </small> Get up to 10 books from the first page, that author name is <i>Adam</i> and publisher name is <i>Crown</i>.
                 </p>
                 <h3>Authentication</h3>
                 <p>Doesn't require</p>
@@ -219,6 +219,89 @@
                 <ul class="list-unstyled">
                     <li>BAD_REQUEST (400) - usually caused by an incorrect parameter</li>
                     <li>NOT_FOUND (404) - book with given ID doesnt not exist in database</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!--  Method 6 egzemplarze -->
+
+    <!--  Method 7  -->
+    <section>
+        <div class="d-flex _h4 mb-3 navbar-expand-lg">
+
+            <div class="flex-grow-1 pe-5">Login</div>
+            <div class="pe-5">
+                <div class=" collapse navbar-collapse "><small class="text-muted">/login</small></div>
+            </div>
+            <div>
+                <button class="btn btn-primary-lib" id="button7" onclick="change(this)" type="button" data-bs-toggle="collapse" data-bs-target="#collapse7" aria-expanded="false" aria-controls="collapse7">Więcej</button>
+            </div>
+        </div>
+        <div class="collapse mb-3 " id="collapse7">
+            <div class="card card-body">
+                <h3>Description</h3>
+                <p> Method allows users to login to the library. API uses JWT tokens to authenticate users. If login was succesful method returns 1 and a token that can be found in the header under the name 'Authorization'. Token must be kept in a safe place.</p>
+                <p> To post username and password body of the request must contain JSON file with the given structure: </p>
+
+                <div class="card card-body mb-3">
+                    <p>{</p>
+                    <p class="mx-3"><span class="json-field">"username": </span> "user_name",
+                    <p class="mx-3"><span class="json-field">"password": </span> "user_password"
+                    <p>}</p>
+                </div>
+
+                <h3>Authentication</h3>
+                <p>Doesn't require</p>
+                <h3>Request method</h3>
+                <p>POST</p>
+                <h3>Return value</h3>
+                <p>int and a token (string) in the header of the request</p>
+                <h3>Errors</h3>
+                <ul class="list-unstyled">
+                    <li>UNAUTHORIZED (401) - Name or password is incorect</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+
+    <!--  Method 8  -->
+    <section>
+        <div class="d-flex _h4 mb-3 navbar-expand-lg">
+
+            <div class="flex-grow-1 pe-5">Register</div>
+            <div class="pe-5">
+                <div class=" collapse navbar-collapse "><small class="text-muted">/register</small></div>
+            </div>
+            <div>
+                <button class="btn btn-primary-lib" id="button8" onclick="change(this)" type="button" data-bs-toggle="collapse" data-bs-target="#collapse8" aria-expanded="false" aria-controls="collapse8">Więcej</button>
+            </div>
+        </div>
+        <div class="collapse mb-3 " id="collapse8">
+            <div class="card card-body">
+                <h3>Description</h3>
+                <p> Method allows users to create a new account in the Library. It returns 1 if register was successful </p>
+                <p> To post user data body of the request must contain JSON file with the given structure: </p>
+
+                <div class="card card-body mb-3">
+                    <p>{</p>
+                    <p class="mx-3"><span class="json-field">"username": </span> "user_name",
+                    <p class="mx-3"><span class="json-field">"email": </span> "user_email",
+                    <p class="mx-3"><span class="json-field">"password": </span> "user_password"
+                    <p>}</p>
+                </div>
+
+                <h3>Authentication</h3>
+                <p>Doesn't require</p>
+                <h3>Request method</h3>
+                <p>POST</p>
+                <h3>Return value</h3>
+                <p>int </p>
+                <h3>Errors</h3>
+                <ul class="list-unstyled">
+                    <li>BAD_REQUEST (400) - usually caused by invalid parameter</li>
+                    <li>CONFLICT (409) - when user with given username or email already exist</li>
                 </ul>
             </div>
         </div>
