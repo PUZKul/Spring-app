@@ -23,7 +23,7 @@ public class RegisterUserController {
     }
 
     @PostMapping("/register")
-    public int registerNewUser(@Validated @RequestBody NewUserHolder newUser){
+    public int registerNewUser(@Valid @RequestBody NewUserHolder newUser){
         // TODO check for nulls automatically
         if(newUser.getUsername() == null) throw new IllegalArgumentException("username cannot be null");
         if(newUser.getEmail() == null) throw new IllegalArgumentException("email cannot be null");

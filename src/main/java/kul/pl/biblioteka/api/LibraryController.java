@@ -1,5 +1,6 @@
 package kul.pl.biblioteka.api;
 
+import kul.pl.biblioteka.model.BookCopy;
 import kul.pl.biblioteka.model.LibraryBook;
 import kul.pl.biblioteka.service.LibraryService;
 import kul.pl.biblioteka.utils.SortSetting;
@@ -43,6 +44,11 @@ public class LibraryController {
         return service.availableCopies(bookId);
     }
 
+//    @GetMapping(path = "/copies/{id}")
+//    public Page<BookCopy> getCopies(@PathVariable("id") long id){
+//        return service.getCopies(id);
+//    }
+
 
     @GetMapping(path = "/search")
     public Page<LibraryBook> searchBooks(@RequestParam(value = "limit") int limit,
@@ -66,5 +72,8 @@ public class LibraryController {
     public Page<LibraryBook> discoverBooks(@PathVariable("limit") int limit){
         return service.discoverBooks(limit);
     }
+
+
+
 
 }
