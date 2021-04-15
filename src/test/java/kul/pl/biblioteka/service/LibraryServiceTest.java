@@ -24,7 +24,7 @@ class LibraryServiceTest {
     @BeforeEach
     public void before(){
         MockitoAnnotations.openMocks(this);
-        this.service = new LibraryService(bookRepository, copiesRepository);
+        this.service = new LibraryService(bookRepository, copiesRepository, historyRepository);
     }
 
     @Test

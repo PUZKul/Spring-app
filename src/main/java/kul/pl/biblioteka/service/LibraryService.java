@@ -1,15 +1,13 @@
 package kul.pl.biblioteka.service;
 
 import kul.pl.biblioteka.exception.ResourceNotFoundException;
-import kul.pl.biblioteka.model.BookCopy;
-import kul.pl.biblioteka.model.LibraryBook;
-import kul.pl.biblioteka.model.PageHolder;
+import kul.pl.biblioteka.model.*;
 import kul.pl.biblioteka.repository.BookCopiesRepository;
 import kul.pl.biblioteka.repository.BookRepository;
+import kul.pl.biblioteka.repository.UserHistoryRepository;
 import kul.pl.biblioteka.utils.LibraryPage;
 import kul.pl.biblioteka.utils.RandomPicker;
 import kul.pl.biblioteka.utils.SortSetting;
-import org.hibernate.mapping.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -17,10 +15,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import static kul.pl.biblioteka.utils.Constants.LIMIT;
+import static java.util.stream.Collectors.toList;
 import static kul.pl.biblioteka.utils.SortSetting.*;
 import static org.springframework.data.domain.Sort.Direction.ASC;
 import static org.springframework.data.domain.Sort.Direction.DESC;
@@ -29,11 +28,13 @@ import static org.springframework.data.domain.Sort.Direction.DESC;
 public class LibraryService {
     private final BookRepository bookRepository;
     private final BookCopiesRepository copiesRepository;
+    private final UserHistoryRepository historyRepository;
 
     @Autowired
-    public LibraryService(BookRepository bookRepository, BookCopiesRepository copiesRepository) {
+    public LibraryService(BookRepository bookRepository, BookCopiesRepository copiesRepository, UserHistoryRepository historyRepository) {
         this.bookRepository = bookRepository;
         this.copiesRepository = copiesRepository;
+        this.historyRepository = historyRepository;
     }
 
     public Page<LibraryBook> getBooks(int offset, int limit, SortSetting sort, Sort.Direction direction){
@@ -63,10 +64,31 @@ public class LibraryService {
         return copiesRepository.availableCopies(bookId);
     }
 
-    public Page<BookCopy> getCopies(long bookId) {
-        Pageable pageable = new LibraryPage(0, 50);
-        Page<BookCopy> copiesPage = copiesRepository.getCopiesByBookId(bookId, pageable);
+    public List<BookCopyHolder> getCopies(long bookId) {
+        Calendar c = Calendar.getInstance();
 
-        return copiesPage;
+        List<BookCopy> copies = copiesRepository.getCopiesByBookId(bookId);
+        List<BookCopyHolder> collect = copies.stream()
+                .map(e -> new BookCopyHolder(
+                        e.getId(),
+                        e.getBookId(),
+                        e.isBorrowed(),
+                        e.isAccess(),
+                        e.getCode(),
+                        null))
+                .collect(toList());
+
+        collect.forEach(e->{
+            if(e.isBorrow()) {
+                Optional<UserHistory> lastBorrow = historyRepository.getLastBorrow(e.getId());
+                if(lastBorrow.isPresent()) c.setTime(lastBorrow.get().getDateIssued());
+                else c.setTime(new Date());
+
+                c.add(Calendar.DATE, 30);
+                e.setApproximateDate(c.getTime());
+            }
+        });
+
+        return collect;
     }
 }

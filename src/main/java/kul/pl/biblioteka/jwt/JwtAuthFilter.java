@@ -39,7 +39,7 @@ public class JwtAuthFilter extends UsernamePasswordAuthenticationFilter {
             return authenticationManager.authenticate(authentication);
 
         } catch (IOException e) {
-            throw new RuntimeException("Invalid username or password");
+            throw new IllegalArgumentException("Invalid username or password");
         }
     }
 

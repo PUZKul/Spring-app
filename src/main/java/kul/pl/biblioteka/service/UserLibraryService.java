@@ -46,6 +46,27 @@ public class UserLibraryService {
         return 1;
     }
 
+
+    public Page<UserHistory> getUserHistory() {
+        Pageable pageable = new LibraryPage(0, 50);
+        return historyRepository.findAll(pageable);
+    }
+
+    public Optional<LibraryUser> getUserByUsername(String name) {
+        return Optional.ofNullable(userRepository.getUserByUsername(name));
+    }
+
+
+
+
+    // editUserAccount
+    // reserveBook
+    // getOwnedBook
+    // getUserHistory
+    // getRanking
+
+
+
     private LibraryUser setNewUser(NewUserHolder newUser) {
         return new LibraryUser(
                 UUID.randomUUID(),
@@ -59,22 +80,4 @@ public class UserLibraryService {
                 true,
                 LibraryUserRole.USER.name());
     }
-
-    public Page<UserHistory> getUserHistory() {
-        Pageable pageable = new LibraryPage(0, 50);
-        return historyRepository.findAll(pageable);
-    }
-
-    public Optional<LibraryUser> getUserByUsername(String name) {
-        return Optional.ofNullable(userRepository.getUserByUsername(name));
-    }
-
-    // getUserById
-    // editUserAccount
-    // reserveBook
-    // register
-    // getOwnedBook
-    // getUserHistory
-    // getRanking
-
 }

@@ -9,11 +9,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
+import java.util.List;
+
 public interface BookCopiesRepository extends JpaRepository<BookCopy, Long> {
 
     @Query(value = "SELECT count(id) from book_copies where book_id = ?", nativeQuery = true)
     int availableCopies(long bookId);
 
     @Query(value = "SELECT * FROM book_copies WHERE book_id = ?", nativeQuery = true)
-    Page<BookCopy> getCopiesByBookId(long bookId, Pageable pageable);
+    List<BookCopy> getCopiesByBookId(long bookId);
 }

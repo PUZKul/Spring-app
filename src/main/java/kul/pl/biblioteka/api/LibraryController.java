@@ -1,6 +1,7 @@
 package kul.pl.biblioteka.api;
 
 import kul.pl.biblioteka.model.BookCopy;
+import kul.pl.biblioteka.model.BookCopyHolder;
 import kul.pl.biblioteka.model.LibraryBook;
 import kul.pl.biblioteka.service.LibraryService;
 import kul.pl.biblioteka.utils.SortSetting;
@@ -45,7 +46,7 @@ public class LibraryController {
     }
 
     @GetMapping(path = "/copies/{id}")
-    public Page<BookCopy> getCopies(@PathVariable("id") long id){
+    public List<BookCopyHolder> getCopies(@PathVariable("id") long id){
         return service.getCopies(id);
     }
 
