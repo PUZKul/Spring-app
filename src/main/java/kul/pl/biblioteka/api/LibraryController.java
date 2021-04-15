@@ -44,10 +44,10 @@ public class LibraryController {
         return service.availableCopies(bookId);
     }
 
-//    @GetMapping(path = "/copies/{id}")
-//    public Page<BookCopy> getCopies(@PathVariable("id") long id){
-//        return service.getCopies(id);
-//    }
+    @GetMapping(path = "/copies/{id}")
+    public Page<BookCopy> getCopies(@PathVariable("id") long id){
+        return service.getCopies(id);
+    }
 
 
     @GetMapping(path = "/search")

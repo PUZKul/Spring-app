@@ -27,9 +27,6 @@ public class BookCopy {
     @Column
     private String comment;
 
-    @Formula("(select b.date_issued from borrow b where b.book_copy_id = id and b.date_return is null)")
-    private Date dateIssued;
-
     public long getId() {
         return id;
     }
@@ -58,7 +55,4 @@ public class BookCopy {
         return comment;
     }
 
-    public Date getDateIssued() {
-        return dateIssued;
-    }
 }

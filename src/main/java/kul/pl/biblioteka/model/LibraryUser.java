@@ -1,5 +1,8 @@
 package kul.pl.biblioteka.model;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -9,11 +12,14 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "users")
+@JsonFilter("userFilter")
 public class LibraryUser {
     @Id
     private UUID id;
     @Column(name = "nick")
     private String username;
+
+    @JsonIgnore
     @Column
     private String password;
     @Column

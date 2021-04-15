@@ -17,10 +17,11 @@ public class  UserHistory {
 
     @JoinColumn(name = "title", table = "books")
     private String title;
-    @Column(name = "book_id")
-    private long bookId;
-    @Column(name = "book_copy_id")
-    private long bookCopyId;
+
+    @ManyToOne
+    @JoinColumn(name = "book_copy_id")
+    private BookCopy bookCopy;
+
     @Column
     private Date dateIssued;
     @Column
@@ -28,14 +29,12 @@ public class  UserHistory {
 
     public UserHistory(@JsonProperty("userId") UUID userId,
                        @JsonProperty("title") String title,
-                       @JsonProperty("bookId") long bookId,
-                       @JsonProperty("bookCopyId") long bookCopyId,
+                       @JsonProperty("bookCopyId") BookCopy bookCopy,
                        @JsonProperty("borrowDate") Date dateIssued,
                        @JsonProperty("returnedDate") Date dateReturn) {
         this.userId = userId;
         this.title = title;
-        this.bookId = bookId;
-        this.bookCopyId = bookCopyId;
+        this.bookCopy = bookCopy;
         this.dateIssued = dateIssued;
         this.dateReturn = dateReturn;
     }
@@ -48,12 +47,8 @@ public class  UserHistory {
         return title;
     }
 
-    public long getBookId() {
-        return bookId;
-    }
-
-    public long getBookCopyId() {
-        return bookCopyId;
+    public BookCopy getBookCopy() {
+        return bookCopy;
     }
 
     public Date getDateIssued() {
