@@ -13,8 +13,8 @@
     <title>Biblioteka API</title>
 
     <script>
-      let closed = "Więcej";
-      let opened = "Zwiń";
+      let closed = "More";
+      let opened = "Hide";
       function change(element){
 
         var el = document.getElementById(element.id)
@@ -39,7 +39,7 @@
                 <div class=" collapse navbar-collapse "><small class="text-muted">/api/library/books?</small></div>
             </div>
             <div>
-                <button class="btn btn-primary-lib" id="button1" onclick="change(this)" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="false" aria-controls="collapse1">Więcej</button>
+                <button class="btn btn-primary-lib" id="button1" onclick="change(this)" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="false" aria-controls="collapse1">More</button>
             </div>
         </div>
         <div class="collapse mb-3 " id="collapse1">
@@ -81,7 +81,7 @@
                 <div class=" collapse navbar-collapse "><small class="text-muted">/api/library/books/id/{id}</small></div>
             </div>
             <div>
-                <button class="btn btn-primary-lib" id="button2" onclick="change(this)" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2">Więcej</button>
+                <button class="btn btn-primary-lib" id="button2" onclick="change(this)" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2">More</button>
             </div>
         </div>
         <div class="collapse mb-3 " id="collapse2">
@@ -114,7 +114,7 @@
                 <div class=" collapse navbar-collapse "><small class="text-muted">/api/library/books/search?</small></div>
             </div>
             <div>
-                <button class="btn btn-primary-lib" id="button3" onclick="change(this)" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3" aria-expanded="false" aria-controls="collapse3">Więcej</button>
+                <button class="btn btn-primary-lib" id="button3" onclick="change(this)" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3" aria-expanded="false" aria-controls="collapse3">More</button>
             </div>
         </div>
         <div class="collapse mb-3 " id="collapse3">
@@ -158,7 +158,7 @@
                 <div class=" collapse navbar-collapse "><small class="text-muted">/api/library/books/discover/{limit}</small></div>
             </div>
             <div>
-                <button class="btn btn-primary-lib" id="button4" onclick="change(this)" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4" aria-expanded="false" aria-controls="collapse4">Więcej</button>
+                <button class="btn btn-primary-lib" id="button4" onclick="change(this)" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4" aria-expanded="false" aria-controls="collapse4">More</button>
             </div>
         </div>
         <div class="collapse mb-3 " id="collapse4">
@@ -195,7 +195,7 @@
                 <div class=" collapse navbar-collapse "><small class="text-muted">/api/library/books/copies/available/{id}</small></div>
             </div>
             <div>
-                <button class="btn btn-primary-lib" id="button5" onclick="change(this)" type="button" data-bs-toggle="collapse" data-bs-target="#collapse5" aria-expanded="false" aria-controls="collapse5">Więcej</button>
+                <button class="btn btn-primary-lib" id="button5" onclick="change(this)" type="button" data-bs-toggle="collapse" data-bs-target="#collapse5" aria-expanded="false" aria-controls="collapse5">More</button>
             </div>
         </div>
         <div class="collapse mb-3 " id="collapse5">
@@ -235,7 +235,7 @@
                 <div class=" collapse navbar-collapse "><small class="text-muted">/login</small></div>
             </div>
             <div>
-                <button class="btn btn-primary-lib" id="button7" onclick="change(this)" type="button" data-bs-toggle="collapse" data-bs-target="#collapse7" aria-expanded="false" aria-controls="collapse7">Więcej</button>
+                <button class="btn btn-primary-lib" id="button7" onclick="change(this)" type="button" data-bs-toggle="collapse" data-bs-target="#collapse7" aria-expanded="false" aria-controls="collapse7">More</button>
             </div>
         </div>
         <div class="collapse mb-3 " id="collapse7">
@@ -275,7 +275,7 @@
                 <div class=" collapse navbar-collapse "><small class="text-muted">/register</small></div>
             </div>
             <div>
-                <button class="btn btn-primary-lib" id="button8" onclick="change(this)" type="button" data-bs-toggle="collapse" data-bs-target="#collapse8" aria-expanded="false" aria-controls="collapse8">Więcej</button>
+                <button class="btn btn-primary-lib" id="button8" onclick="change(this)" type="button" data-bs-toggle="collapse" data-bs-target="#collapse8" aria-expanded="false" aria-controls="collapse8">More</button>
             </div>
         </div>
         <div class="collapse mb-3 " id="collapse8">
@@ -302,6 +302,57 @@
                 <ul class="list-unstyled">
                     <li>BAD_REQUEST (400) - usually caused by invalid parameter</li>
                     <li>CONFLICT (409) - when user with given username or email already exist</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+
+    <!--  Method 9  -->
+    <section>
+        <div class="d-flex _h4 mb-3 navbar-expand-lg">
+
+            <div class="flex-grow-1 pe-5">Get user data</div>
+            <div class="pe-5">
+                <div class=" collapse navbar-collapse "><small class="text-muted">/api/library/users</small></div>
+            </div>
+            <div>
+                <button class="btn btn-primary-lib" id="button9" onclick="change(this)" type="button" data-bs-toggle="collapse" data-bs-target="#collapse9" aria-expanded="false" aria-controls="collapse9">More</button>
+            </div>
+        </div>
+        <div class="collapse mb-3 " id="collapse9">
+            <div class="card card-body">
+                <h3>Description</h3>
+                <p> Method returns user data with the given structure as below</p>
+
+                <div class="card card-body mb-3">
+                    <p>{</p>
+                    <p class="mx-3"><span class="json-field">"id": </span> "user_UUID",
+                    <p class="mx-3"><span class="json-field">"username": </span> "user_name",
+                    <p class="mx-3"><span class="json-field">"email": </span> "user_email",
+                    <p class="mx-3"><span class="json-field">"maxBooks": </span> "int_value"
+                    <p class="mx-3"><span class="json-field">"points": </span> "int_value"
+                    <p class="mx-3"><span class="json-field">"warnings": </span> "int_value"
+                    <p>}</p>
+                </div>
+                <p>Admin application will recive additional fields </p>
+                <div class="card card-body mb-3">
+                    <p>{</p>
+                    <p class="mx-3"><span class="json-field">"isBanned": </span> "boolean_value",
+                    <p class="mx-3"><span class="json-field">"isEnabled": </span> "boolean_value",
+                    <p class="mx-3"><span class="json-field">"comment": </span> "string_with_additional_information",
+                    <p class="mx-3"><span class="json-field">"role": </span> "ROLE_as_String"
+                    <p>}</p>
+                </div>
+                <h3>Authentication</h3>
+                <p>Require</p>
+                <h3>Request method</h3>
+                <p>GET</p>
+                <h3>Return value</h3>
+                <p>User object </p>
+                <h3>Errors</h3>
+                <ul class="list-unstyled">
+                    <li>FORBIDDEN (403) - missing or invalid token</li>
                 </ul>
             </div>
         </div>
