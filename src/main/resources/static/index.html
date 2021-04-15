@@ -225,6 +225,62 @@
     </section>
 
     <!--  Method 6 egzemplarze -->
+    <section>
+        <div class="d-flex _h4 mb-3 navbar-expand-lg">
+
+            <div class="flex-grow-1 pe-5">Get book copies</div>
+            <div class="pe-5">
+                <div class=" collapse navbar-collapse "><small class="text-muted">/api/library/books/copies/{id}</small></div>
+            </div>
+            <div>
+                <button class="btn btn-primary-lib" id="button6" onclick="change(this)" type="button" data-bs-toggle="collapse" data-bs-target="#collapse6" aria-expanded="false" aria-controls="collapse6">More</button>
+            </div>
+        </div>
+        <div class="collapse mb-3 " id="collapse6">
+            <div class="card card-body">
+                <h3>Description</h3>
+                <p> Method returns list of book copies with given ID. </p>
+                <p>
+                    <b> id </b> - id of book<br/>
+                </p>
+                <p>The structure of each book copy</p>
+
+                <div class="card card-body mb-3">
+                    <p>{</p>
+                    <p class="mx-3"><span class="json-field">"id": </span> "long_value",
+                    <p class="mx-3"><span class="json-field">"bookId": </span> "long_value"
+                    <p class="mx-3"><span class="json-field">"borrow": </span> "boolean_value"
+                    <p class="mx-3"><span class="json-field">"access": </span> "boolean_value"
+                    <p class="mx-3"><span class="json-field">"code": </span> "string_value"
+                    <p class="mx-3"><span class="json-field">"approximateDate": </span> "date_value"
+                    <p>}</p>
+                </div>
+                <p>Brief explenation</p>
+                <ul class="ms-4 mb-5 list-group list-group-flush">
+                    <li class="list-group-item"><b>borrow</b> - True means the book is currently borrowed. False - the book is available </li>
+                    <li class="list-group-item"><b>access</b> - True means a book can be read at home. False - a book is only available to read inside of the library</li>
+                    <li class="list-group-item"><b>code</b> - additional unique id of each book copy</li>
+                    <li class="list-group-item"><b>approximateDate</b> - If a book copy is borrowed this field approximately says when it should be available again</li>
+                    
+                </ul>
+
+                <h3>Example</h3>
+                <p>
+                    <small class="text-muted h6"> api/library/books/copies/1</small> Get list of book copies with id 1<br/>
+                </p>
+                <h3>Authentication</h3>
+                <p>Doesn't require</p>
+                <h3>Request method</h3>
+                <p>GET</p>
+                <h3>Return value</h3>
+                <p>List of book copies</p>
+                <h3>Errors</h3>
+                <ul class="list-unstyled">
+                    <li>BAD_REQUEST (400) - usually caused by an incorrect parameter</li>
+                </ul>
+            </div>
+        </div>
+    </section>
 
     <!--  Method 7  -->
     <section>

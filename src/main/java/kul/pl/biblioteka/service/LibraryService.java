@@ -66,7 +66,6 @@ public class LibraryService {
 
     public List<BookCopyHolder> getCopies(long bookId) {
         Calendar c = Calendar.getInstance();
-
         List<BookCopy> copies = copiesRepository.getCopiesByBookId(bookId);
         List<BookCopyHolder> collect = copies.stream()
                 .map(e -> new BookCopyHolder(
