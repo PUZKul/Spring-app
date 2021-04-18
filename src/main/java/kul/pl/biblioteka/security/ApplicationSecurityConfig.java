@@ -47,7 +47,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(new JwtAuthFilter(authenticationManager(), jwtConfig))
                 .addFilterAfter(new JwtTokenVerifier(jwtConfig), JwtAuthFilter.class)
                 .authorizeRequests()
-                .antMatchers("/*", "index", "/css/*").permitAll()  //free access to main index page
+                .antMatchers("/*", "index", "/graphic/*").permitAll()  //free access to main index page
                 .antMatchers("/api/library/books").permitAll()  //reading list of books doesn't need an authorization
                 .antMatchers("/api/library/books/**").permitAll()  //reading list of books doesn't need an authorization
                 .antMatchers("/register").permitAll()

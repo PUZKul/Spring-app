@@ -79,7 +79,6 @@ class ValidatorTest {
     public void password_shouldValidateGivenPasswords(String password, boolean expected){
         //when
         boolean result = Validator.password(password);
-
         //then
         assertEquals(result, expected);
     }

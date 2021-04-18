@@ -65,19 +65,17 @@ public class LibraryService {
     }
 
     public List<BookCopyHolder> getCopies(long bookId) {
-        Calendar c = Calendar.getInstance();
         List<BookCopy> copies = copiesRepository.getCopiesByBookId(bookId);
-        List<BookCopyHolder> collect = copies.stream()
-                .map(e -> new BookCopyHolder(
-                        e.getId(),
-                        e.getBookId(),
-                        e.isBorrowed(),
-                        e.isAccess(),
-                        e.getCode(),
-                        null))
-                .collect(toList());
+        List<BookCopyHolder> collect = createBookCopyHolder(copies);
 
-        collect.forEach(e->{
+        setApproximateDates(collect);
+
+        return collect;
+    }
+
+    private void setApproximateDates(List<BookCopyHolder> holders) {
+        Calendar c = Calendar.getInstance();
+        holders.forEach(e->{
             if(e.isBorrow()) {
                 Optional<UserHistory> lastBorrow = historyRepository.getLastBorrow(e.getId());
                 if(lastBorrow.isPresent()) c.setTime(lastBorrow.get().getDateIssued());
@@ -87,7 +85,17 @@ public class LibraryService {
                 e.setApproximateDate(c.getTime());
             }
         });
+    }
 
-        return collect;
+    private List<BookCopyHolder> createBookCopyHolder(List<BookCopy> books) {
+       return books.stream()
+                .map(e -> new BookCopyHolder(
+                        e.getId(),
+                        e.getBookId(),
+                        e.isBorrowed(),
+                        e.isAccess(),
+                        e.getCode(),
+                        null))
+                .collect(toList());
     }
 }

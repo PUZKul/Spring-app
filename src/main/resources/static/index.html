@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Dokumentacja biblioteki PUZ">
     <meta name="author" content="Szymon">
-
+    <link rel='shortcut icon' type='image/x-icon' href='graphic/favicon.png' />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="style.css">
@@ -53,6 +53,7 @@
                     <b> order </b> - optional parameter. It specifies the sorting direction. Default value (ASC). Available values: <b>ASC, DESC</b>. <br/>
 
                 </p>
+
                 <h3>Example</h3>
                 <p>
                     <small class="text-muted h6"> api/library/books?limit=10&page=0&sort=TITLE </small>  Get 10 books from the first page, sorted by title from A to Z <br/>
@@ -88,6 +89,19 @@
             <div class="card card-body">
                 <h3>Description</h3>
                 <p> The method returns one book with the given id. If the book is not found then it throws an exception</p>
+                The structure of a book:
+                <div class="card card-body mb-3">
+                    <p>{</p>
+                    <p class="mx-3"><span class="json-field">"id": </span> "long_value",
+                    <p class="mx-3"><span class="json-field">"authors": </span> "string_value"
+                    <p class="mx-3"><span class="json-field">"rating": </span> "decimal_value"
+                    <p class="mx-3"><span class="json-field">"popularity": </span> "decimal_value"
+                    <p class="mx-3"><span class="json-field">"pages": </span> "int_value"
+                    <p class="mx-3"><span class="json-field">"year": </span> "date_value"
+                    <p class="mx-3"><span class="json-field">"publisher": </span> "string_value"
+                    <p class="mx-3"><span class="json-field">"imageUrl": </span> "string_value"
+                    <p>}</p>
+                </div>
                 <h3>Example</h3>
                 <p> <small class="text-muted h6"> api/library/books/id/<b>1</b> </small>  - Get a book with id equals 1</p>
                 <h3>Authentication</h3>
@@ -312,7 +326,7 @@
                 <h3>Request method</h3>
                 <p>POST</p>
                 <h3>Return value</h3>
-                <p>int and a token (string) in the header of the request</p>
+                <p>int</p>
                 <h3>Errors</h3>
                 <ul class="list-unstyled">
                     <li>UNAUTHORIZED (401) - Name or password is incorect</li>
@@ -365,54 +379,54 @@
 
 
     <!--  Method 9  -->
-    <section>
-        <div class="d-flex _h4 mb-3 navbar-expand-lg">
+<!--    <section>-->
+<!--        <div class="d-flex _h4 mb-3 navbar-expand-lg">-->
 
-            <div class="flex-grow-1 pe-5">Get user data</div>
-            <div class="pe-5">
-                <div class=" collapse navbar-collapse "><small class="text-muted">/api/library/users</small></div>
-            </div>
-            <div>
-                <button class="btn btn-primary-lib" id="button9" onclick="change(this)" type="button" data-bs-toggle="collapse" data-bs-target="#collapse9" aria-expanded="false" aria-controls="collapse9">More</button>
-            </div>
-        </div>
-        <div class="collapse mb-3 " id="collapse9">
-            <div class="card card-body">
-                <h3>Description</h3>
-                <p> Method returns user data with the given structure as below</p>
+<!--            <div class="flex-grow-1 pe-5">Get user data</div>-->
+<!--            <div class="pe-5">-->
+<!--                <div class=" collapse navbar-collapse "><small class="text-muted">/api/library/users</small></div>-->
+<!--            </div>-->
+<!--            <div>-->
+<!--                <button class="btn btn-primary-lib" id="button9" onclick="change(this)" type="button" data-bs-toggle="collapse" data-bs-target="#collapse9" aria-expanded="false" aria-controls="collapse9">More</button>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class="collapse mb-3 " id="collapse9">-->
+<!--            <div class="card card-body">-->
+<!--                <h3>Description</h3>-->
+<!--                <p> Method returns user data with the given structure as below</p>-->
 
-                <div class="card card-body mb-3">
-                    <p>{</p>
-                    <p class="mx-3"><span class="json-field">"id": </span> "user_UUID",
-                    <p class="mx-3"><span class="json-field">"username": </span> "user_name",
-                    <p class="mx-3"><span class="json-field">"email": </span> "user_email",
-                    <p class="mx-3"><span class="json-field">"maxBooks": </span> "int_value"
-                    <p class="mx-3"><span class="json-field">"points": </span> "int_value"
-                    <p class="mx-3"><span class="json-field">"warnings": </span> "int_value"
-                    <p>}</p>
-                </div>
-                <p>Admin application will recive additional fields </p>
-                <div class="card card-body mb-3">
-                    <p>{</p>
-                    <p class="mx-3"><span class="json-field">"isBanned": </span> "boolean_value",
-                    <p class="mx-3"><span class="json-field">"isEnabled": </span> "boolean_value",
-                    <p class="mx-3"><span class="json-field">"comment": </span> "string_with_additional_information",
-                    <p class="mx-3"><span class="json-field">"role": </span> "ROLE_as_String"
-                    <p>}</p>
-                </div>
-                <h3>Authentication</h3>
-                <p>Require</p>
-                <h3>Request method</h3>
-                <p>GET</p>
-                <h3>Return value</h3>
-                <p>User object </p>
-                <h3>Errors</h3>
-                <ul class="list-unstyled">
-                    <li>FORBIDDEN (403) - missing or invalid token</li>
-                </ul>
-            </div>
-        </div>
-    </section>
+<!--                <div class="card card-body mb-3">-->
+<!--                    <p>{</p>-->
+<!--                    <p class="mx-3"><span class="json-field">"id": </span> "user_UUID",-->
+<!--                    <p class="mx-3"><span class="json-field">"username": </span> "user_name",-->
+<!--                    <p class="mx-3"><span class="json-field">"email": </span> "user_email",-->
+<!--                    <p class="mx-3"><span class="json-field">"maxBooks": </span> "int_value"-->
+<!--                    <p class="mx-3"><span class="json-field">"points": </span> "int_value"-->
+<!--                    <p class="mx-3"><span class="json-field">"warnings": </span> "int_value"-->
+<!--                    <p>}</p>-->
+<!--                </div>-->
+<!--                <p>Admin application will recive additional fields </p>-->
+<!--                <div class="card card-body mb-3">-->
+<!--                    <p>{</p>-->
+<!--                    <p class="mx-3"><span class="json-field">"isBanned": </span> "boolean_value",-->
+<!--                    <p class="mx-3"><span class="json-field">"isEnabled": </span> "boolean_value",-->
+<!--                    <p class="mx-3"><span class="json-field">"comment": </span> "string_with_additional_information",-->
+<!--                    <p class="mx-3"><span class="json-field">"role": </span> "ROLE_as_String"-->
+<!--                    <p>}</p>-->
+<!--                </div>-->
+<!--                <h3>Authentication</h3>-->
+<!--                <p>Require</p>-->
+<!--                <h3>Request method</h3>-->
+<!--                <p>GET</p>-->
+<!--                <h3>Return value</h3>-->
+<!--                <p>User object </p>-->
+<!--                <h3>Errors</h3>-->
+<!--                <ul class="list-unstyled">-->
+<!--                    <li>FORBIDDEN (403) - missing or invalid token</li>-->
+<!--                </ul>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </section>-->
 
 </div>
 </body>
