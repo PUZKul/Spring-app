@@ -16,4 +16,6 @@ public interface LibraryUserRepository extends CrudRepository<LibraryUser, UUID>
 
     @Query(value = "SELECT count(*) FROM users u WHERE email = ?", nativeQuery = true)
     int isEmailExist(String email);
+
+
 }

@@ -74,7 +74,4 @@ public class LibraryController {
         return service.discoverBooks(limit);
     }
 
-
-
-
 }
