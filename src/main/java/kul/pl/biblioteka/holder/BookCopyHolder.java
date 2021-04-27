@@ -1,4 +1,4 @@
-package kul.pl.biblioteka.model;
+package kul.pl.biblioteka.holder;
 
 import java.time.LocalDate;
 import java.util.Date;

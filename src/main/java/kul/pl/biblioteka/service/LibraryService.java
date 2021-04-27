@@ -1,6 +1,7 @@
 package kul.pl.biblioteka.service;
 
 import kul.pl.biblioteka.exception.ResourceNotFoundException;
+import kul.pl.biblioteka.holder.BookCopyHolder;
 import kul.pl.biblioteka.model.*;
 import kul.pl.biblioteka.repository.BookCopiesRepository;
 import kul.pl.biblioteka.repository.BookRepository;
@@ -15,9 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 import static kul.pl.biblioteka.utils.SortSetting.*;

@@ -55,4 +55,18 @@ public class ApiExceptionHandler {
         );
         return new ResponseEntity<>(exception, status);
     }
+
+    @ExceptionHandler(value = {AuthorisationException.class})
+    public ResponseEntity<Object> handlerAuthorisationException(HttpServletRequest req, AuthorisationException e){
+
+        HttpStatus status = HttpStatus.FORBIDDEN;
+        ApiException exception = new ApiException(
+                ZonedDateTime.now(ZoneId.of("Z")),
+                status.value(),
+                status.name(),
+                e.getMessage(),
+                req.getRequestURI()
+        );
+        return new ResponseEntity<>(exception, status);
+    }
 }

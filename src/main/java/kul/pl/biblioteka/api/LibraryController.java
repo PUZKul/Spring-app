@@ -1,7 +1,6 @@
 package kul.pl.biblioteka.api;
 
-import kul.pl.biblioteka.model.BookCopy;
-import kul.pl.biblioteka.model.BookCopyHolder;
+import kul.pl.biblioteka.holder.BookCopyHolder;
 import kul.pl.biblioteka.model.LibraryBook;
 import kul.pl.biblioteka.service.LibraryService;
 import kul.pl.biblioteka.utils.SortSetting;

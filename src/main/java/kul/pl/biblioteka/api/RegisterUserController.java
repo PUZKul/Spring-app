@@ -1,12 +1,8 @@
 package kul.pl.biblioteka.api;
 
-import kul.pl.biblioteka.model.LibraryUser;
-import kul.pl.biblioteka.model.NewUserHolder;
+import kul.pl.biblioteka.holder.UserHolder;
 import kul.pl.biblioteka.service.UserLibraryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.NonNull;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,7 +19,7 @@ public class RegisterUserController {
     }
 
     @PostMapping("/register")
-    public int registerNewUser(@Valid @RequestBody NewUserHolder newUser){
+    public int registerNewUser(@Valid @RequestBody UserHolder newUser){
         // TODO check for nulls automatically
         if(newUser.getUsername() == null) throw new IllegalArgumentException("username cannot be null");
         if(newUser.getEmail() == null) throw new IllegalArgumentException("email cannot be null");

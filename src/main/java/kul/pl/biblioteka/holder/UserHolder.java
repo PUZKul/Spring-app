@@ -1,17 +1,13 @@
-package kul.pl.biblioteka.model;
+package kul.pl.biblioteka.holder;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class NewUserHolder {
+public class UserHolder {
     private final String username;
-
     private final String email;
-
     private final String password;
 
-    public NewUserHolder(@JsonProperty("username")  String username,
-                         @JsonProperty("email") String email,
-                         @JsonProperty("password") String password) {
+    public UserHolder(String username, String email, String password) {
         this.username = username;
         this.email = email;
         this.password = password;

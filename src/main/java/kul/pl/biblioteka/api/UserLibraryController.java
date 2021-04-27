@@ -1,25 +1,20 @@
 package kul.pl.biblioteka.api;
 
 
-import com.fasterxml.jackson.databind.ser.FilterProvider;
-import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
-import kul.pl.biblioteka.model.BookCopy;
-import com.monitorjbl.json.*;
+import kul.pl.biblioteka.holder.EditUserHolder;
 import kul.pl.biblioteka.model.LibraryUser;
-import kul.pl.biblioteka.model.UserHistory;
+import kul.pl.biblioteka.holder.UserHolder;
 import kul.pl.biblioteka.service.UserLibraryService;
 import kul.pl.biblioteka.utils.JSONFilter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.converter.json.MappingJacksonValue;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.security.Principal;
 import java.util.Optional;
+
+import static kul.pl.biblioteka.utils.Helper.isNullOrEmpty;
 
 @RestController
 @RequestMapping("api/library/users")
@@ -41,6 +36,13 @@ public class UserLibraryController {
                    .setFilter("userFilter")
                    .build()
                    .getMapper();
+    }
+
+    @PutMapping(path = "/edit")
+    public int editUser(@RequestBody @Valid EditUserHolder user, Principal principal){
+        if(isNullOrEmpty(user.getOldPassword()))
+            throw new IllegalArgumentException("Old password is required");
+        return service.editUser(user, principal.getName());
     }
 
 //    @GetMapping(path = "/history")

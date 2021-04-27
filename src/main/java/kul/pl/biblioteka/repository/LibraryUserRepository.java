@@ -17,5 +17,7 @@ public interface LibraryUserRepository extends CrudRepository<LibraryUser, UUID>
     @Query(value = "SELECT count(*) FROM users u WHERE email = ?", nativeQuery = true)
     int isEmailExist(String email);
 
+    @Query(value = "UPDATE users SET email = ?, password = ? WHERE nick = ?", nativeQuery = true)
+    int editUserData(String email, String password, String username);
 
 }
