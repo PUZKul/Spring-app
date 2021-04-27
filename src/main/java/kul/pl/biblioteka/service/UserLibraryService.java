@@ -71,7 +71,6 @@ public class UserLibraryService {
             String encode = PasswordConfig.encoder().encode(user.getNewPassword());
             user.setNewPassword(encode);
         }
-
         return userRepository.editUserData(user.getEmail(), user.getNewPassword(), username);
     }
 
