@@ -58,8 +58,12 @@ public class UserLibraryService {
 
         if(isNullOrEmpty(user.getEmail()))
             user.setEmail(repoUser.get().getEmail());
-        else
-            if(!Validator.email(user.getEmail())) throw new IllegalArgumentException(String.format("Given email '%s' is invalid", user.getEmail()));
+        else{
+          if(!Validator.email(user.getEmail())) throw new IllegalArgumentException(String.format("Given email '%s' is invalid", user.getEmail()));
+          if(!user.getEmail().equals(repoUser.get().getEmail()))
+            if(userRepository.isEmailExist(user.getEmail()) > 0) throw new EntityExistsException("User with given email already exist");
+        }
+
 
         if(isNullOrEmpty(user.getNewPassword()))
             user.setNewPassword(repoUser.get().getPassword());
