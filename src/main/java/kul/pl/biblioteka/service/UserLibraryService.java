@@ -14,11 +14,10 @@ import kul.pl.biblioteka.utils.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.stereotype.Service;
 
-import javax.naming.AuthenticationException;
 import javax.persistence.EntityExistsException;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -84,6 +83,14 @@ public class UserLibraryService {
         return Optional.ofNullable(userRepository.getUserByUsername(name));
     }
 
+    public UserBookDetails getUserBookDetails(String username){
+      LibraryUser user = userRepository.getUserByUsername(username);
+      Collection<UserHistory> allByUserName = historyRepository.findAllByUserName(user.getId());
+
+      long countCurrent = allByUserName.stream().filter(e -> e.getDateReturn() == null).count();
+      long totalBooks = allByUserName.size() - countCurrent;
+      return new UserBookDetails(totalBooks, countCurrent);
+    }
 
 
 

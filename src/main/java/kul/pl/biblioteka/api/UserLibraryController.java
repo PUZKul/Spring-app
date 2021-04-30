@@ -4,6 +4,7 @@ package kul.pl.biblioteka.api;
 import kul.pl.biblioteka.holder.EditUserHolder;
 import kul.pl.biblioteka.model.LibraryUser;
 import kul.pl.biblioteka.holder.UserHolder;
+import kul.pl.biblioteka.model.UserBookDetails;
 import kul.pl.biblioteka.service.UserLibraryService;
 import kul.pl.biblioteka.utils.JSONFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,11 @@ public class UserLibraryController {
         if(isNullOrEmpty(user.getOldPassword()))
             throw new IllegalArgumentException("Old password is required");
         return service.editUser(user, principal.getName());
+    }
+
+    @GetMapping(path = "/bookDetails")
+    public UserBookDetails getUserBookDetails(Principal principal){
+        return service.getUserBookDetails(principal.getName());
     }
 
 //    @GetMapping(path = "/history")

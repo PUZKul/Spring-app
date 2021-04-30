@@ -393,8 +393,15 @@
         <div class="collapse mb-3 " id="collapse9">
             <div class="card card-body">
                 <h3>Description</h3>
-                <p> Method returns user data with the given structure as below</p>
+                <p> Method returns user data</p>
 
+                
+                <h3>Authentication</h3>
+                <p>Require</p>
+                <h3>Request method</h3>
+                <p>GET</p>
+                <h3>Return value</h3>
+                <p>User object </p>
                 <div class="card card-body mb-3">
                     <p>{</p>
                     <p class="mx-3"><span class="json-field">"id": </span> "user_UUID",
@@ -414,12 +421,6 @@
                     <p class="mx-3"><span class="json-field">"role": </span> "ROLE_as_String"
                     <p>}</p>
                 </div>
-                <h3>Authentication</h3>
-                <p>Require</p>
-                <h3>Request method</h3>
-                <p>GET</p>
-                <h3>Return value</h3>
-                <p>User object </p>
                 <h3>Errors</h3>
                 <ul class="list-unstyled">
                     <li>FORBIDDEN (403) - missing or invalid token</li>
@@ -428,5 +429,90 @@
         </div>
     </section>
 
+     <!-- Method 10 -->
+    <section>
+        <div class="d-flex _h4 mb-3 navbar-expand-lg">
+
+            <div class="flex-grow-1 pe-5">Get user book details</div>
+            <div class="pe-5">
+                <div class=" collapse navbar-collapse "><small class="text-muted">/api/library/users/bookDetails</small></div>
+            </div>
+            <div>
+                <button class="btn btn-primary-lib" id="button10" onclick="change(this)" type="button" data-bs-toggle="collapse" data-bs-target="#collapse10" aria-expanded="false" aria-controls="collapse10">More</button>
+            </div>
+        </div>
+        <div class="collapse mb-3 " id="collapse10">
+            <div class="card card-body">
+                <h3>Description</h3>
+                <p> The method returns two values. Number of all books user read so far and number of books user currently is reading</p>
+
+                
+
+                <h3>Authentication</h3>
+                <p>Require</p>
+                <h3>Request method</h3>
+                <p>GET</p>
+                <h3>Return value</h3>
+                <p>UserBookDetails Object </p>
+                <div class="card card-body mb-3">
+                    <p>{</p>
+                    <p class="mx-3"><span class="json-field">"totalBooks": </span> "long_value",
+                    <p class="mx-3"><span class="json-field">"currentBooks": </span> "long_value",
+                    <p>}</p>
+                </div>
+                <h3>Errors</h3>
+                <ul class="list-unstyled">
+                    <li>FORBIDDEN (403) - missing or invalid token</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+         <!-- Method 11 -->
+         <section>
+            <div class="d-flex _h4 mb-3 navbar-expand-lg">
+    
+                <div class="flex-grow-1 pe-5">Edit user</div>
+                <div class="pe-5">
+                    <div class=" collapse navbar-collapse "><small class="text-muted">/api/library/users/edit</small></div>
+                </div>
+                <div>
+                    <button class="btn btn-primary-lib" id="button11" onclick="change(this)" type="button" data-bs-toggle="collapse" data-bs-target="#collapse11" aria-expanded="false" aria-controls="collapse11">More</button>
+                </div>
+            </div>
+            <div class="collapse mb-3 " id="collapse11">
+                <div class="card card-body">
+                    <h3>Description</h3>
+                    <p> The method allows to edit user data like email and password. It returns 1 if data was updated</p>
+                    <p>Body of the request must contain JSON file with the given structure:</p>
+                    <div class="card card-body mb-3">
+                        <p>{</p>
+                        <p class="mx-3"><span class="json-field">"email": </span> "user_email",
+                        <p class="mx-3"><span class="json-field">"newPassword": </span> "user_new_password",
+                        <p class="mx-3"><span class="json-field">"oldPassword": </span> "user_old_password",
+                        <p>}</p>
+                    </div>
+                    <p>
+                        
+                        <b>email</b> - this field contains a new user email <br/>
+                        <b>newPassword</b> - this field contains a new user password <br/>
+                        <b>OldPassword</b> - his field is always required to confirm the user. It should contain the current user password.
+
+                    </p>
+                    <p>If the user changed only email then 'newPassword' field can be empty. The same is if the user changed only the password then the email field can be left empty.</p>
+                    <h3>Authentication</h3>
+                    <p>Require</p>
+                    <h3>Request method</h3>
+                    <p>PUT</p>
+                    <h3>Return value</h3>
+                    <p> int </p>
+                    <h3>Errors</h3>
+                    <ul class="list-unstyled">
+                        <li>BAD_REQUEST (400) - usually caused by invalid parameter</li>
+                        <li>FORBIDDEN (403) - missing or invalid token or password</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
 </div>
 </body>
