@@ -69,4 +69,18 @@ public class ApiExceptionHandler {
         );
         return new ResponseEntity<>(exception, status);
     }
+
+  @ExceptionHandler(value = {InvalidTokenException.class})
+  public ResponseEntity<Object> handlerInvalidTokenException(HttpServletRequest req, InvalidTokenException e){
+
+    HttpStatus status = HttpStatus.UNAUTHORIZED;
+    ApiException exception = new ApiException(
+        ZonedDateTime.now(ZoneId.of("Z")),
+        status.value(),
+        status.name(),
+        e.getMessage(),
+        req.getRequestURI()
+    );
+    return new ResponseEntity<>(exception, status);
+  }
 }

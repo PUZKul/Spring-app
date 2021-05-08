@@ -9,7 +9,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "borrow")
 //@SecondaryTable(name = "books", pkJoinColumns = {@PrimaryKeyJoinColumn(name = "bookId", referencedColumnName = "bookCopy"),@PrimaryKeyJoinColumn(name="id", referencedColumnName = "bookId")})
-public class UserHistory {
+public class UserBook {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +26,7 @@ public class UserHistory {
   @Column
   private Date dateReturn;
 
-  public UserHistory(
+  public UserBook(
       @JsonProperty("userId") UUID userId,
       @JsonProperty("bookCopyId") BookCopy bookCopy,
       @JsonProperty("borrowDate") Date dateIssued,
@@ -38,14 +38,17 @@ public class UserHistory {
     this.dateReturn = dateReturn;
   }
 
-  public UserHistory() {
+  public UserBook() {
 
+  }
+
+  public long getId() {
+    return id;
   }
 
   public UUID getUserId() {
     return userId;
   }
-
 
   public BookCopy getBookCopy() {
     return bookCopy;

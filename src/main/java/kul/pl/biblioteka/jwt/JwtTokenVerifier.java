@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import kul.pl.biblioteka.exception.InvalidTokenException;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -30,9 +31,10 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     protected void doFilterInternal(HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
-                                    @NonNull FilterChain filterChain) throws ServletException, IOException {
+                                    @NonNull FilterChain filterChain) throws ServletException, IOException, InvalidTokenException{
 
         String authorizationHeader = request.getHeader(jwtConfig.getAuthorizationHeader());
         if(authorizationHeader == null || authorizationHeader.length() == 0 || !authorizationHeader.startsWith(jwtConfig.getTokenPrefix())){
@@ -67,7 +69,7 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
 
 
         }catch (JwtException e){
-            throw new IllegalStateException(String.format("Token %s cannot be trusted", token));
+            throw new InvalidTokenException(String.format("Token %s cannot be trusted", token));
         }
 
         filterChain.doFilter(request, response); //pass payload to the next filter

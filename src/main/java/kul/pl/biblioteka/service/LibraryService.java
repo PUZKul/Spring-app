@@ -76,7 +76,7 @@ public class LibraryService {
         Calendar c = Calendar.getInstance();
         holders.forEach(e->{
             if(e.isBorrow()) {
-                Optional<UserHistory> lastBorrow = historyRepository.getLastBorrow(e.getId());
+                Optional<UserBook> lastBorrow = historyRepository.getLastBorrow(e.getId());
                 if(lastBorrow.isPresent()) c.setTime(lastBorrow.get().getDateIssued());
                 else c.setTime(new Date());
 
