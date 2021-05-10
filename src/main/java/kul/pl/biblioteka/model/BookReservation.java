@@ -1,5 +1,6 @@
 package kul.pl.biblioteka.model;
 
+import lombok.Builder;
 import lombok.Data;
 
 import kul.pl.biblioteka.utils.ReservationState;
@@ -11,6 +12,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "reservations")
 @Data
+@Builder
 public class BookReservation {
 
   @Id
@@ -28,4 +30,19 @@ public class BookReservation {
   private Date dateReservation;
   @Column(name = "date_borrow")
   private Date dateBorrow;
+
+  public BookReservation(){
+
+  }
+
+  public BookReservation(
+      long id, BookCopy bookCopy, UUID userId, ReservationState state, Date dateReservation,
+      Date dateBorrow) {
+    this.id = id;
+    this.bookCopy = bookCopy;
+    this.userId = userId;
+    this.state = state;
+    this.dateReservation = dateReservation;
+    this.dateBorrow = dateBorrow;
+  }
 }

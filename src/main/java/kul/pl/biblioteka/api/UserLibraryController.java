@@ -10,6 +10,7 @@ import kul.pl.biblioteka.service.UserLibraryService;
 import kul.pl.biblioteka.utils.JSONFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
 
@@ -62,21 +63,28 @@ public class UserLibraryController {
     }
 
   @GetMapping(path = "/reservations")
-  public Page<ReservationHolder> getReservations(
-      @RequestParam(value = "limit") int limit,
-      @RequestParam(value = "page") int page,
+  public Page<ReservationHolder> getReservations( @RequestParam(value = "limit") int limit,
+                                                  @RequestParam(value = "page") int page,
       Principal principal){
     int offset = page * limit;
     return service.getUserReservations(offset, limit, principal.getName());
   }
 
   @GetMapping(path = "/currentBooks")
-  public Page<UserBookHolder> getCurrentUserBooks(
-      @RequestParam(value = "limit") int limit,
-      @RequestParam(value = "page") int page,
+  public Page<UserBookHolder> getCurrentUserBooks(@RequestParam(value = "limit") int limit,
+                                                  @RequestParam(value = "page") int page,
       Principal principal){
     int offset = page * limit;
     return service.getCurrentUserBooks(offset, limit, principal.getName());
   }
 
+  @GetMapping(path = "/reserve/{bookCopyId}")
+  public long makeReservation(@PathVariable("bookCopyId") long bookCopyId, Principal principal){
+      return service.reserveBook(bookCopyId, principal.getName());
+  }
+
+  @GetMapping(path = "/reservations/cancel/{reservationId}")
+  public long cancelReservation(@PathVariable("reservationId") long reservationId){
+    return service.cancelReservation(reservationId);
+  }
 }

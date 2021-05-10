@@ -1,19 +1,18 @@
 package kul.pl.biblioteka.service;
 
 import kul.pl.biblioteka.exception.AuthorisationException;
+import kul.pl.biblioteka.exception.BookIsOccupiedException;
 import kul.pl.biblioteka.exception.ResourceNotFoundException;
 import kul.pl.biblioteka.holder.EditUserHolder;
 import kul.pl.biblioteka.holder.UserBookHolder;
 import kul.pl.biblioteka.holder.ReservationHolder;
 import kul.pl.biblioteka.holder.UserHolder;
 import kul.pl.biblioteka.model.*;
-import kul.pl.biblioteka.repository.BookRepository;
-import kul.pl.biblioteka.repository.LibraryUserRepository;
-import kul.pl.biblioteka.repository.ReservationRepository;
-import kul.pl.biblioteka.repository.UserHistoryRepository;
+import kul.pl.biblioteka.repository.*;
 import kul.pl.biblioteka.security.LibraryUserRole;
 import kul.pl.biblioteka.security.PasswordConfig;
 import kul.pl.biblioteka.utils.LibraryPage;
+import kul.pl.biblioteka.utils.ReservationState;
 import kul.pl.biblioteka.utils.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -34,15 +33,19 @@ public class UserLibraryService {
   private final LibraryUserRepository userRepository;
   private final UserHistoryRepository historyRepository;
   private final BookRepository bookRepository;
+  private final BookCopiesRepository bookCopiesRepository;
   private final ReservationRepository reservationRepository;
 
   @Autowired
   public UserLibraryService(
       LibraryUserRepository userRepository, UserHistoryRepository historyRepository,
-      BookRepository bookRepository, ReservationRepository reservationRepository) {
+      BookRepository bookRepository,
+      BookCopiesRepository bookCopiesRepository,
+      ReservationRepository reservationRepository) {
     this.userRepository = userRepository;
     this.historyRepository = historyRepository;
     this.bookRepository = bookRepository;
+    this.bookCopiesRepository = bookCopiesRepository;
     this.reservationRepository = reservationRepository;
   }
 
@@ -94,6 +97,32 @@ public class UserLibraryService {
       user.setNewPassword(encode);
     }
     return userRepository.editUserData(user.getEmail(), user.getNewPassword(), username);
+  }
+
+  public long reserveBook(long bookCopyId, String username){
+    Optional<BookCopy> copy = bookCopiesRepository.findById(bookCopyId);
+    if (copy.get().isBorrowed()) throw new BookIsOccupiedException("This book is already borrowed");
+    BookReservation reservation = BookReservation.builder()
+        .userId(getUserId(username))
+        .bookCopy(copy.get())
+        .state(ReservationState.WAITING)
+        .dateReservation(new Date())
+        .dateBorrow(null)
+        .build();
+
+    BookReservation save = reservationRepository.save(reservation);
+    bookCopiesRepository.markAsBorrowed(bookCopyId);
+    return save.getId();
+  }
+
+  public int cancelReservation(long reservationId){
+    Optional<BookReservation> reservation = reservationRepository.findById(reservationId);
+    if (reservation.isEmpty()) throw new ResourceNotFoundException("There is no reservation with this ID in the database");
+    if (reservation.get().getState() != ReservationState.WAITING) throw new IllegalArgumentException("Reservation was already canceled or completed");
+    BookCopy bookCopy = reservation.get().getBookCopy();
+    bookCopiesRepository.markAsFree(bookCopy.getId());
+    reservationRepository.cancel(reservationId, ReservationState.CANCELED);
+    return 1;
   }
 
   public Page<ReservationHolder> getUserReservations(int offset, int limit, String username){

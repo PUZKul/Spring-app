@@ -83,4 +83,18 @@ public class ApiExceptionHandler {
     );
     return new ResponseEntity<>(exception, status);
   }
+
+  @ExceptionHandler(value = {BookIsOccupiedException.class})
+  public ResponseEntity<Object> handlerBookIsOccupiedException(HttpServletRequest req, BookIsOccupiedException e){
+
+    HttpStatus status = HttpStatus.CONFLICT;
+    ApiException exception = new ApiException(
+        ZonedDateTime.now(ZoneId.of("Z")),
+        status.value(),
+        status.name(),
+        e.getMessage(),
+        req.getRequestURI()
+    );
+    return new ResponseEntity<>(exception, status);
+  }
 }
