@@ -97,4 +97,18 @@ public class ApiExceptionHandler {
     );
     return new ResponseEntity<>(exception, status);
   }
+
+  @ExceptionHandler(value = {AlreadyBorrowedException.class})
+  public ResponseEntity<Object> handlerAlreadyBorrowedException(HttpServletRequest req, AlreadyBorrowedException e){
+
+    HttpStatus status = HttpStatus.CONFLICT;
+    ApiException exception = new ApiException(
+        ZonedDateTime.now(ZoneId.of("Z")),
+        status.value(),
+        status.name(),
+        e.getMessage(),
+        req.getRequestURI()
+    );
+    return new ResponseEntity<>(exception, status);
+  }
 }

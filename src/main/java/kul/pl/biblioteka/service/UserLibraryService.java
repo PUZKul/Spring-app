@@ -121,7 +121,7 @@ public class UserLibraryService {
     if (reservation.get().getState() != ReservationState.WAITING) throw new IllegalArgumentException("Reservation was already canceled or completed");
     BookCopy bookCopy = reservation.get().getBookCopy();
     bookCopiesRepository.markAsFree(bookCopy.getId());
-    reservationRepository.cancel(reservationId, ReservationState.CANCELED);
+    reservationRepository.changeStatus(reservationId, ReservationState.CANCELED);
     return 1;
   }
 

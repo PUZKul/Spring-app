@@ -1,12 +1,11 @@
 package kul.pl.biblioteka.api;
 
+import kul.pl.biblioteka.holder.ReservationHolder;
 import kul.pl.biblioteka.service.AdminLibraryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/library/admins")
@@ -20,9 +19,13 @@ public class AdminLibraryController {
         this.service = service;
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("confirmBorrow/{reservationId}")
+    @PutMapping("/confirmBorrow/{reservationId}")
     public long confirmBorrow(@PathVariable("reservationId") long reservationId){
         return service.confirmBorrow(reservationId);
+    }
+
+    @GetMapping("/reservations")
+    public List<ReservationHolder> getWaitingReservations(){
+      return service.getReservationList();
     }
 }

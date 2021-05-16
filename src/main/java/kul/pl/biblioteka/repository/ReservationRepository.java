@@ -20,5 +20,6 @@ public interface ReservationRepository extends CrudRepository<BookReservation, L
   @Transactional
   @Modifying
   @Query("UPDATE BookReservation r SET r.state = :state WHERE r.id = :id")
-  void cancel(@Param("id") long reservationId, @Param("state") ReservationState state);
+  void changeStatus(@Param("id") long reservationId, @Param("state") ReservationState state);
+
 }

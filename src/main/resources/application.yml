@@ -8,4 +8,4 @@ app:
   jwt:
     secretKey: TpbMDT7fN9ABn491KaxntJcmtpEOR1YZA9fwW6tf1ljpiC0TDlh0yw
     tokenPrefix: 'Bearer '
-    tokenExpirationAfterDays: 5
+    tokenExpirationAfterDays: 30
