@@ -31,14 +31,14 @@ import static kul.pl.biblioteka.utils.Helper.isNullOrEmpty;
 public class UserLibraryService {
 
   private final LibraryUserRepository userRepository;
-  private final UserHistoryRepository historyRepository;
+  private final UserBookRepository historyRepository;
   private final BookRepository bookRepository;
   private final BookCopiesRepository bookCopiesRepository;
   private final ReservationRepository reservationRepository;
 
   @Autowired
   public UserLibraryService(
-      LibraryUserRepository userRepository, UserHistoryRepository historyRepository,
+      LibraryUserRepository userRepository, UserBookRepository historyRepository,
       BookRepository bookRepository,
       BookCopiesRepository bookCopiesRepository,
       ReservationRepository reservationRepository) {
@@ -215,11 +215,6 @@ public class UserLibraryService {
     LibraryUser user = userRepository.getUserByUsername(username);
     return user.getId();
   }
-  // editUserAccount
-  // reserveBook
-  // getOwnedBook
-  // getUserHistory
-  // getRanking
 
 
   private boolean confirmPassword(String receivedPassword, String currentPassword) {

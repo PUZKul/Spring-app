@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface UserHistoryRepository extends JpaRepository<UserBook, Long> {
+public interface UserBookRepository extends JpaRepository<UserBook, Long> {
 
   @Query(value = "SELECT * FROM borrow WHERE book_copy_id = ? AND date_return IS NULL", nativeQuery = true)
   Optional<UserBook> getLastBorrow(long copyId);

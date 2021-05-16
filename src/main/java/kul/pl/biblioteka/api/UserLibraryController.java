@@ -56,7 +56,7 @@ public class UserLibraryController {
 
     @GetMapping(path = "/history")
     public Page<UserBookHolder> getHistory(@RequestParam(value = "limit") int limit,
-                                         @RequestParam(value = "page") int page,
+                                           @RequestParam(value = "page") int page,
                                           Principal principal){
         int offset = page * limit;
         return service.getUserHistory(offset, limit, principal.getName());

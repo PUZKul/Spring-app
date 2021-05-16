@@ -37,9 +37,7 @@ public class UserBook {
     this.dateIssued = dateIssued;
     this.dateReturn = dateReturn;
   }
-
   public UserBook() {
-
   }
 
   public long getId() {

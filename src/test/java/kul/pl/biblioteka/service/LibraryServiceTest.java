@@ -1,19 +1,15 @@
 package kul.pl.biblioteka.service;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import kul.pl.biblioteka.model.BookCopy;
-import kul.pl.biblioteka.model.LibraryBook;
 import kul.pl.biblioteka.repository.BookCopiesRepository;
 import kul.pl.biblioteka.repository.BookRepository;
-import kul.pl.biblioteka.repository.UserHistoryRepository;
+import kul.pl.biblioteka.repository.UserBookRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.awt.print.Book;
 import java.text.ParseException;
-import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -28,7 +24,7 @@ class LibraryServiceTest {
     private BookCopiesRepository copiesRepository;
 
     @Mock
-    private UserHistoryRepository historyRepository;
+    private UserBookRepository historyRepository;
 
     @BeforeEach
     public void before(){

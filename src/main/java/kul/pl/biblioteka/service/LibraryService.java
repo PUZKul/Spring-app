@@ -5,7 +5,7 @@ import kul.pl.biblioteka.holder.BookCopyHolder;
 import kul.pl.biblioteka.model.*;
 import kul.pl.biblioteka.repository.BookCopiesRepository;
 import kul.pl.biblioteka.repository.BookRepository;
-import kul.pl.biblioteka.repository.UserHistoryRepository;
+import kul.pl.biblioteka.repository.UserBookRepository;
 import kul.pl.biblioteka.utils.LibraryPage;
 import kul.pl.biblioteka.utils.RandomPicker;
 import kul.pl.biblioteka.utils.SortSetting;
@@ -27,10 +27,10 @@ import static org.springframework.data.domain.Sort.Direction.DESC;
 public class LibraryService {
     private final BookRepository bookRepository;
     private final BookCopiesRepository copiesRepository;
-    private final UserHistoryRepository historyRepository;
+    private final UserBookRepository historyRepository;
 
     @Autowired
-    public LibraryService(BookRepository bookRepository, BookCopiesRepository copiesRepository, UserHistoryRepository historyRepository) {
+    public LibraryService(BookRepository bookRepository, BookCopiesRepository copiesRepository, UserBookRepository historyRepository) {
         this.bookRepository = bookRepository;
         this.copiesRepository = copiesRepository;
         this.historyRepository = historyRepository;
