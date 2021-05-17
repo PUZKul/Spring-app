@@ -68,7 +68,6 @@ public class LibraryService {
         List<BookCopyHolder> collect = createBookCopyHolder(copies);
 
         setApproximateDates(collect);
-
         return collect;
     }
 

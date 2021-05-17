@@ -65,5 +65,13 @@ public class AdminLibraryService {
           .collect(Collectors.toList());
     }
 
+    public void cancelReservation(long reservationId){
+      Optional<BookReservation> reservation = reservationRepository.findById(reservationId);
+      if(reservation.isEmpty()) throw new ResourceNotFoundException("Reservation does not exist");
+      if(reservation.get().getState() == ReservationState.BORROWED) throw new AlreadyBorrowedException("Reservation already realized");
+      if(reservation.get().getState() == ReservationState.CANCELED) throw new IllegalArgumentException("Reservation already canceled");
+
+      reservationRepository.changeStatus(reservation.get().getId(), ReservationState.CANCELED);
+    }
 
 }

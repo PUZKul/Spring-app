@@ -12,20 +12,25 @@ import java.util.List;
 
 public class AdminLibraryController {
 
-    private final AdminLibraryService service;
+  private final AdminLibraryService service;
 
-    @Autowired
-    public AdminLibraryController(AdminLibraryService service) {
-        this.service = service;
-    }
+  @Autowired
+  public AdminLibraryController(AdminLibraryService service) {
+    this.service = service;
+  }
 
-    @PutMapping("/confirmBorrow/{reservationId}")
-    public long confirmBorrow(@PathVariable("reservationId") long reservationId){
-        return service.confirmBorrow(reservationId);
-    }
+  @PostMapping("/confirmBorrow/{reservationId}")
+  public long confirmBorrow(@PathVariable("reservationId") long reservationId) {
+    return service.confirmBorrow(reservationId);
+  }
 
-    @GetMapping("/reservations")
-    public List<ReservationHolder> getWaitingReservations(){
-      return service.getReservationList();
-    }
+  @GetMapping("/reservations")
+  public List<ReservationHolder> getWaitingReservations() {
+    return service.getReservationList();
+  }
+
+  @PostMapping("/reservations/cancel/{reservationId}")
+  public void cancelReservation(@PathVariable("reservationId") long reservationId) {
+    service.cancelReservation(reservationId);
+  }
 }
