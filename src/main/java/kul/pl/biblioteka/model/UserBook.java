@@ -1,5 +1,7 @@
 package kul.pl.biblioteka.model;
 
+import lombok.Getter;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
@@ -8,7 +10,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "borrow")
-//@SecondaryTable(name = "books", pkJoinColumns = {@PrimaryKeyJoinColumn(name = "bookId", referencedColumnName = "bookCopy"),@PrimaryKeyJoinColumn(name="id", referencedColumnName = "bookId")})
+@Getter
 public class UserBook {
 
   @Id
@@ -21,43 +23,25 @@ public class UserBook {
   @JoinColumn(name = "book_copy_id")
   private BookCopy bookCopy;
 
-  @Column
   private Date dateIssued;
-  @Column
   private Date dateReturn;
+  private Date expectedTime;
 
   public UserBook(
       @JsonProperty("userId") UUID userId,
       @JsonProperty("bookCopyId") BookCopy bookCopy,
       @JsonProperty("borrowDate") Date dateIssued,
-      @JsonProperty("returnedDate") Date dateReturn) {
+      @JsonProperty("returnedDate") Date dateReturn,
+      @JsonProperty("expectedTime") Date expectedTime) {
     this.userId = userId;
 
     this.bookCopy = bookCopy;
     this.dateIssued = dateIssued;
     this.dateReturn = dateReturn;
+    this.expectedTime = expectedTime;
   }
+
   public UserBook() {
-  }
 
-  public long getId() {
-    return id;
   }
-
-  public UUID getUserId() {
-    return userId;
-  }
-
-  public BookCopy getBookCopy() {
-    return bookCopy;
-  }
-
-  public Date getDateIssued() {
-    return dateIssued;
-  }
-
-  public Date getDateReturn() {
-    return dateReturn;
-  }
-
 }

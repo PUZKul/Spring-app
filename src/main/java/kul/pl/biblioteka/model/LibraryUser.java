@@ -1,5 +1,7 @@
 package kul.pl.biblioteka.model;
 
+import lombok.Data;
+
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -11,6 +13,7 @@ import java.util.UUID;
 
 
 @Entity
+@Data
 @Table(name = "users")
 @JsonFilter("userFilter")
 public class LibraryUser {
@@ -18,7 +21,10 @@ public class LibraryUser {
     private UUID id;
     @Column(name = "nick")
     private String username;
-
+    private String firstName;
+    private String lastName;
+    private String address;
+    private String phone;
     @JsonIgnore
     @Column
     private String password;
@@ -55,49 +61,4 @@ public class LibraryUser {
         this.isEnabled = isEnabled;
         this.role = role;
     }
-
-    public int getPoints() {
-        return points;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public int getWarnings() {
-        return warnings;
-    }
-
-    public int getMaxBooks() {
-        return maxBooks;
-    }
-
-    public boolean isBanned() {
-        return isBanned;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public boolean isEnabled() {
-        return isEnabled;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
 }

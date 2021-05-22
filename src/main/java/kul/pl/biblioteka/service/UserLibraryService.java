@@ -9,6 +9,7 @@ import kul.pl.biblioteka.holder.ReservationHolder;
 import kul.pl.biblioteka.holder.UserHolder;
 import kul.pl.biblioteka.model.*;
 import kul.pl.biblioteka.repository.*;
+import kul.pl.biblioteka.schedule.Scheduler;
 import kul.pl.biblioteka.security.LibraryUserRole;
 import kul.pl.biblioteka.security.PasswordConfig;
 import kul.pl.biblioteka.utils.LibraryPage;
@@ -24,8 +25,6 @@ import javax.persistence.EntityExistsException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static kul.pl.biblioteka.utils.Helper.isNullOrEmpty;
-
 
 @Service
 public class UserLibraryService {
@@ -35,18 +34,20 @@ public class UserLibraryService {
   private final BookRepository bookRepository;
   private final BookCopiesRepository bookCopiesRepository;
   private final ReservationRepository reservationRepository;
+  private final Scheduler scheduler;
 
   @Autowired
   public UserLibraryService(
       LibraryUserRepository userRepository, UserBookRepository historyRepository,
       BookRepository bookRepository,
       BookCopiesRepository bookCopiesRepository,
-      ReservationRepository reservationRepository) {
+      ReservationRepository reservationRepository, Scheduler scheduler) {
     this.userRepository = userRepository;
     this.historyRepository = historyRepository;
     this.bookRepository = bookRepository;
     this.bookCopiesRepository = bookCopiesRepository;
     this.reservationRepository = reservationRepository;
+    this.scheduler = scheduler;
   }
 
   public int registerNewUser(UserHolder newUser) {
@@ -69,34 +70,14 @@ public class UserLibraryService {
     return 1;
   }
 
-  public int editUser(EditUserHolder user, String username) {
+  public int editUser(EditUserHolder user, String username){
     Optional<LibraryUser> repoUser = getUserByUsername(username);
-    if (repoUser.isEmpty())
-      throw new ResourceNotFoundException("User not exist");
     if (!confirmPassword(user.getOldPassword(), repoUser.get().getPassword()))
       throw new AuthorisationException("Incorrect password");
 
-    if (isNullOrEmpty(user.getEmail()))
-      user.setEmail(repoUser.get().getEmail());
-    else {
-      if (!Validator.email(user.getEmail()))
-        throw new IllegalArgumentException(
-            String.format("Given email '%s' is invalid", user.getEmail()));
-      if (!user.getEmail().equals(repoUser.get().getEmail()))
-        if (userRepository.isEmailExist(user.getEmail()) > 0)
-          throw new EntityExistsException("User with given email already exist");
-    }
-
-    if (isNullOrEmpty(user.getNewPassword()))
-      user.setNewPassword(repoUser.get().getPassword());
-    else {
-      if (!Validator.password(user.getNewPassword()))
-        throw new IllegalArgumentException("Given password is invalid");
-
-      String encode = PasswordConfig.encoder().encode(user.getNewPassword());
-      user.setNewPassword(encode);
-    }
-    return userRepository.editUserData(user.getEmail(), user.getNewPassword(), username);
+    var userDataUpdater = new UserDataUpdater(userRepository);
+    userDataUpdater.update(user, username);
+    return 1;
   }
 
   public long reserveBook(long bookCopyId, String username){
@@ -126,6 +107,7 @@ public class UserLibraryService {
   }
 
   public Page<ReservationHolder> getUserReservations(int offset, int limit, String username){
+    scheduler.checkReservations();
     Pageable pageable = new LibraryPage(offset, limit);
     var reservations = reservationRepository.findAllByUserId(getUserId(username), pageable);
     var reservationHolder = createReservationHolder(reservations);
@@ -133,7 +115,9 @@ public class UserLibraryService {
   }
 
   private List<ReservationHolder> createReservationHolder(Page<BookReservation> reservations) {
-    return reservations.stream().map(e -> {
+    return reservations.stream()
+        .filter(e->e.getState()==ReservationState.WAITING)
+        .map(e -> {
           long bookId = e.getBookCopy().getBookId();
           return ReservationHolder.builder()
               .id(e.getId())

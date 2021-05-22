@@ -489,14 +489,15 @@
                         <p>{</p>
                         <p class="mx-3"><span class="json-field">"email": </span> "user_email",
                         <p class="mx-3"><span class="json-field">"newPassword": </span> "user_new_password",
+                        <p class="mx-3"><span class="json-field">"firstName": </span> "user_first_name",
+                        <p class="mx-3"><span class="json-field">"lastName": </span> "user_last_name",
+                        <p class="mx-3"><span class="json-field">"address": </span> "user_address",
+                        <p class="mx-3"><span class="json-field">"phone": </span> "user_phone",
                         <p class="mx-3"><span class="json-field">"oldPassword": </span> "user_old_password",
                         <p>}</p>
                     </div>
                     <p>
-                        
-                        <b>email</b> - this field contains a new user email <br/>
-                        <b>newPassword</b> - this field contains a new user password <br/>
-                        <b>OldPassword</b> - his field is always required to confirm the user. It should contain the current user password.
+                        <b>OldPassword</b> - this field is always required to confirm the user. It should contain the current user password.
 
                     </p>
                     <p>If the user changed only email then 'newPassword' field can be empty. The same is if the user changed only the password then the email field can be left empty.</p>
@@ -522,7 +523,7 @@
 
             <div class="flex-grow-1 pe-5">Get user books history</div>
             <div class="pe-5">
-                <div class=" collapse navbar-collapse "><small class="text-muted">/api/library/users/history</small></div>
+                <div class=" collapse navbar-collapse "><small class="text-muted">/api/library/users/history?</small></div>
             </div>
             <div>
                 <button class="btn btn-primary-lib" id="button12" onclick="change(this)" type="button" data-bs-toggle="collapse" data-bs-target="#collapse12" aria-expanded="false" aria-controls="collapse12">More</button>
@@ -532,6 +533,11 @@
             <div class="card card-body">
                 <h3>Description</h3>
                 <p> It returns page with list of books that user already read and returned to the library</p>
+                <p> This method takes 2 required parameters limit and page</p>
+                <p>
+                    <b> limit </b> - number of books to request (min 1, max 50)<br/>
+                    <b> page </b> - page number. It must not be less than 0 <br/>
+                </p>
                 <p> Each element has given structure:</p>
                 <div class="card card-body mb-3">
                     <p>{</p>
@@ -541,10 +547,14 @@
                     <p class="mx-3"><span class="json-field">"bookCopyId": </span> "book_copy_id_long_value",
                     <p class="mx-3"><span class="json-field">"title": </span> "book_title_string",
                     <p class="mx-3"><span class="json-field">"imageUrl": </span> "image_url_string",
-                    <p class="mx-3"><span class="json-field">"dateReservation": </span> "date_of_reservation",
-                    <p class="mx-3"><span class="json-field">"dateBorrow": </span> "date_of_return"
+                    <p class="mx-3"><span class="json-field">"dateIssued": </span> "date_of_reservation",
+                    <p class="mx-3"><span class="json-field">"dateReturn": </span> "date_of_return"
                     <p>}</p>
                 </div>
+                <h3>Example</h3>
+                <p>
+                    <small class="text-muted h6"> api/library/users/history?limit=10&page=0 </small> Get up to 10 reservations from the first page 
+                </p>
                 <h3>Authentication</h3>
                 <p>Require</p>
                 <h3>Request method</h3>
@@ -624,7 +634,6 @@
         </div>
     </div>
 </section>
-
 
 </div>
 </body>

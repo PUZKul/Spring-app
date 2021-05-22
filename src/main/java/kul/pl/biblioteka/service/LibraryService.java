@@ -1,10 +1,13 @@
 package kul.pl.biblioteka.service;
 
+import lombok.RequiredArgsConstructor;
+
 import kul.pl.biblioteka.exception.ResourceNotFoundException;
 import kul.pl.biblioteka.holder.BookCopyHolder;
 import kul.pl.biblioteka.model.*;
 import kul.pl.biblioteka.repository.BookCopiesRepository;
 import kul.pl.biblioteka.repository.BookRepository;
+import kul.pl.biblioteka.repository.ReservationRepository;
 import kul.pl.biblioteka.repository.UserBookRepository;
 import kul.pl.biblioteka.utils.LibraryPage;
 import kul.pl.biblioteka.utils.RandomPicker;
@@ -24,17 +27,12 @@ import static org.springframework.data.domain.Sort.Direction.ASC;
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @Service
+@RequiredArgsConstructor
 public class LibraryService {
+
     private final BookRepository bookRepository;
     private final BookCopiesRepository copiesRepository;
-    private final UserBookRepository historyRepository;
-
-    @Autowired
-    public LibraryService(BookRepository bookRepository, BookCopiesRepository copiesRepository, UserBookRepository historyRepository) {
-        this.bookRepository = bookRepository;
-        this.copiesRepository = copiesRepository;
-        this.historyRepository = historyRepository;
-    }
+    private final UserBookRepository userBookRepository;
 
     public Page<LibraryBook> getBooks(int offset, int limit, SortSetting sort, Sort.Direction direction){
         Pageable pageable = new LibraryPage(offset, limit, direction, sort.toString());
@@ -65,24 +63,7 @@ public class LibraryService {
 
     public List<BookCopyHolder> getCopies(long bookId) {
         List<BookCopy> copies = copiesRepository.getCopiesByBookId(bookId);
-        List<BookCopyHolder> collect = createBookCopyHolder(copies);
-
-        setApproximateDates(collect);
-        return collect;
-    }
-
-    private void setApproximateDates(List<BookCopyHolder> holders) {
-        Calendar c = Calendar.getInstance();
-        holders.forEach(e->{
-            if(e.isBorrow()) {
-                Optional<UserBook> lastBorrow = historyRepository.getLastBorrow(e.getId());
-                if(lastBorrow.isPresent()) c.setTime(lastBorrow.get().getDateIssued());
-                else c.setTime(new Date());
-
-                c.add(Calendar.DATE, 30);
-                e.setApproximateDate(c.getTime());
-            }
-        });
+      return createBookCopyHolder(copies);
     }
 
     private List<BookCopyHolder> createBookCopyHolder(List<BookCopy> books) {
@@ -93,7 +74,7 @@ public class LibraryService {
                         e.isBorrowed(),
                         e.isAccess(),
                         e.getCode(),
-                        null))
+                        userBookRepository.getExpectedDate(e.getId())))
                 .collect(toList());
     }
 }

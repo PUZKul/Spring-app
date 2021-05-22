@@ -7,9 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.Collection;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 public interface UserBookRepository extends JpaRepository<UserBook, Long> {
 
@@ -21,4 +19,10 @@ public interface UserBookRepository extends JpaRepository<UserBook, Long> {
 
   @Query("select b from UserBook b WHERE b.userId = :userId")
   Page<UserBook> findAllByUserId(UUID userId, Pageable pageable);
+
+  @Query("select b from UserBook b WHERE b.dateReturn is null")
+  List<UserBook> findAllBorrowed();
+
+  @Query("select b.expectedTime from UserBook b WHERE b.id = :id")
+  Date getExpectedDate(@Param("id") long id);
 }

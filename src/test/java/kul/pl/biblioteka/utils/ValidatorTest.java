@@ -83,4 +83,49 @@ class ValidatorTest {
         assertEquals(result, expected);
     }
 
+  @DisplayName("NameValidator test")
+  @ParameterizedTest(name = "\"{0}\" should be {1}")
+  @CsvSource({
+      "ola1, false",
+      "a, false",
+      "adammarek, true",
+      "adam12345, false",
+      "Jan-Maria, true",
+      "Bożena, true",
+  })
+  public void name_shouldValidateGivenNames(String name, boolean expected){
+    //when
+    boolean result = Validator.name(name);
+    //then
+    assertEquals(result, expected);
+  }
+
+  @DisplayName("AddressValidator test")
+  @ParameterizedTest(name = "\"{0}\" should be {1}")
+  @CsvSource({
+      "090 as0d0(0+, false",
+      "Lublin 12-400, true",
+      "ul. Konstantynow 12, true",
+  })
+  public void shouldValidateGivenAddress(String address, boolean expected){
+    //when
+    boolean result = Validator.address(address);
+    //then
+    assertEquals(result, expected);
+  }
+
+  @DisplayName("PhoneValidator test")
+  @ParameterizedTest(name = "\"{0}\" should be {1}")
+  @CsvSource({
+      "123456789, true",
+      "+49123456789, true",
+      "90-2312231231, false",
+  })
+  public void shouldValidateGivenPhone(String phone, boolean expected){
+    //when
+    boolean result = Validator.phone(phone);
+    //then
+    assertEquals(result, expected);
+  }
+
 }

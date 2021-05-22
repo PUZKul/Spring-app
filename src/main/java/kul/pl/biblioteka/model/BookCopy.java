@@ -1,13 +1,18 @@
 package kul.pl.biblioteka.model;
 
+import lombok.Getter;
+import lombok.Value;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.Where;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
+@Getter
 @Table(name = "book_copies")
 public class BookCopy {
     @Id
@@ -26,33 +31,5 @@ public class BookCopy {
     private int damageLvl;
     @Column
     private String comment;
-
-    public long getId() {
-        return id;
-    }
-
-    public long getBookId() {
-        return bookId;
-    }
-
-    public boolean isBorrowed() {
-        return borrowed;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public boolean isAccess() {
-        return access;
-    }
-
-    public int getDamageLvl() {
-        return damageLvl;
-    }
-
-    public String getComment() {
-        return comment;
-    }
 
 }
