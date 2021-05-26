@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static kul.pl.biblioteka.utils.Helper.addDaysFromToday;
 import static kul.pl.biblioteka.utils.Helper.isNullOrEmpty;
 import static kul.pl.biblioteka.utils.ReservationState.WAITING;
 
@@ -43,17 +44,12 @@ public class AdminLibraryService {
                 reservation.get().getBookCopy(),
                 new Date(),
                 null,
+                reservationId,
                 addDaysFromToday(30));
         UserBook save = userBookRepository.save(userBook);
         reservationRepository.changeStatus(reservation.get().getId(), ReservationState.BORROWED);
         return save.getId();
     }
-
-  private Date addDaysFromToday(int days) {
-      Calendar c= Calendar.getInstance();
-      c.add(Calendar.DATE, days);
-      return c.getTime();
-  }
 
   public List<ReservationHolder> getReservationList(int offset, int limit, String username){
       scheduler.checkReservations();

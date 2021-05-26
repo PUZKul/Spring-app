@@ -1,15 +1,14 @@
 package kul.pl.biblioteka.exception;
 
-import com.sun.jdi.InternalException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import javax.persistence.EntityExistsException;
-import javax.servlet.http.HttpServletRequest;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import javax.persistence.EntityExistsException;
+import javax.servlet.http.HttpServletRequest;
 
 @ControllerAdvice
 public class ApiExceptionHandler {
@@ -54,6 +53,20 @@ public class ApiExceptionHandler {
                 req.getRequestURI()
         );
         return new ResponseEntity<>(exception, status);
+    }
+
+    @ExceptionHandler(value = {AlreadyExtendedException.class})
+    public ResponseEntity<Object> handlerAlreadyExtendedException(HttpServletRequest req, AlreadyExtendedException e){
+
+      HttpStatus status = HttpStatus.CONFLICT;
+      ApiException exception = new ApiException(
+          ZonedDateTime.now(ZoneId.of("Z")),
+          status.value(),
+          status.name(),
+          e.getMessage(),
+          req.getRequestURI()
+      );
+      return new ResponseEntity<>(exception, status);
     }
 
     @ExceptionHandler(value = {AuthorisationException.class})

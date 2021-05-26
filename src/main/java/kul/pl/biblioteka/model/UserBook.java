@@ -25,6 +25,8 @@ public class UserBook {
 
   private Date dateIssued;
   private Date dateReturn;
+  @Column(name = "reservation_id")
+  private Long reservationId;
   private Date expectedTime;
 
   public UserBook(
@@ -32,12 +34,13 @@ public class UserBook {
       @JsonProperty("bookCopyId") BookCopy bookCopy,
       @JsonProperty("borrowDate") Date dateIssued,
       @JsonProperty("returnedDate") Date dateReturn,
+      @JsonProperty("reservationId") Long reservationId,
       @JsonProperty("expectedTime") Date expectedTime) {
     this.userId = userId;
-
     this.bookCopy = bookCopy;
     this.dateIssued = dateIssued;
     this.dateReturn = dateReturn;
+    this.reservationId = reservationId;
     this.expectedTime = expectedTime;
   }
 

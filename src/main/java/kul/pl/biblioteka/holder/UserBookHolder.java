@@ -17,4 +17,5 @@ public class UserBookHolder {
   private String imageUrl;
   private Date dateIssued;
   private Date dateReturn;
+  private Date expectedDate;
 }

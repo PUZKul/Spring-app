@@ -1,7 +1,10 @@
 package kul.pl.biblioteka.holder;
 
+import lombok.Data;
+
 import java.util.Date;
 
+@Data
 public class BookCopyHolder {
     private long id;
     private long bookId;
@@ -16,34 +19,6 @@ public class BookCopyHolder {
         this.borrow = borrow;
         this.access = access;
         this.code = code;
-        this.approximateDate = approximateDate;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public long getBookId() {
-        return bookId;
-    }
-
-    public boolean isBorrow() {
-        return borrow;
-    }
-
-    public boolean isAccess() {
-        return access;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public Date getApproximateDate() {
-        return approximateDate;
-    }
-
-    public void setApproximateDate(Date approximateDate) {
         this.approximateDate = approximateDate;
     }
 }

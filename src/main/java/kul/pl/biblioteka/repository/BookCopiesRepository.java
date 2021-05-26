@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
+import java.util.Date;
 import java.util.List;
 import javax.transaction.Transactional;
 
@@ -30,4 +31,9 @@ public interface BookCopiesRepository extends JpaRepository<BookCopy, Long> {
     @Modifying
     @Query(value = "UPDATE book_copies SET borrowed = FALSE WHERE id = ?", nativeQuery = true)
     void markAsFree(long bookCopyId);
+
+    @Transactional
+    @Modifying
+    @Query(value = "UPDATE book_copies SET approximate = FALSE WHERE id = ?", nativeQuery = true)
+    void setApproximateDate(Date addDaysFromToday);
 }

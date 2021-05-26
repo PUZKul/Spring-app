@@ -16,23 +16,29 @@ class UserDataUpdater {
   }
 
   void update(EditUserHolder user, String username){
-    if (!isNullOrEmpty(user.getEmail())){
-      updateEmail(user.getEmail(), username);
+    var email = user.getEmail().trim();
+    var password = user.getNewPassword().trim();
+    var firstName = user.getFirstName().trim();
+    var address = user.getAddress().trim();
+    var phone = user.getPhone().trim();
+    var lastName = user.getLastName().trim();
+    if (!isNullOrEmpty(email)){
+      updateEmail(email, username);
     }
-    if(!isNullOrEmpty(user.getNewPassword())){
-      updatePassword(user.getNewPassword(), username);
+    if(!isNullOrEmpty(password)){
+      updatePassword(password, username);
     }
-    if(!isNullOrEmpty(user.getFirstName())){
-      updateFirstName(user.getFirstName(), username);
+    if(!isNullOrEmpty(firstName)){
+      updateFirstName(firstName, username);
     }
-    if(!isNullOrEmpty(user.getLastName())){
-      updateLastName(user.getLastName(), username);
+    if(!isNullOrEmpty(lastName)){
+      updateLastName(lastName, username);
     }
-    if(!isNullOrEmpty(user.getAddress())){
-      updateAddress(user.getAddress(), username);
+    if(!isNullOrEmpty(address)){
+      updateAddress(address, username);
     }
-    if(!isNullOrEmpty(user.getPhone())){
-      updatePhone(user.getPhone(), username);
+    if(!isNullOrEmpty(phone)){
+      updatePhone(phone, username);
     }
   }
 

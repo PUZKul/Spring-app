@@ -1,8 +1,8 @@
 package kul.pl.biblioteka.service;
 
-import kul.pl.biblioteka.exception.AuthorisationException;
-import kul.pl.biblioteka.exception.BookIsOccupiedException;
-import kul.pl.biblioteka.exception.ResourceNotFoundException;
+import lombok.RequiredArgsConstructor;
+
+import kul.pl.biblioteka.exception.*;
 import kul.pl.biblioteka.holder.EditUserHolder;
 import kul.pl.biblioteka.holder.UserBookHolder;
 import kul.pl.biblioteka.holder.ReservationHolder;
@@ -15,7 +15,9 @@ import kul.pl.biblioteka.security.PasswordConfig;
 import kul.pl.biblioteka.utils.LibraryPage;
 import kul.pl.biblioteka.utils.ReservationState;
 import kul.pl.biblioteka.utils.Validator;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.joda.time.DateTime;
+import org.joda.time.Days;
+import org.joda.time.LocalDate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +29,7 @@ import java.util.stream.Collectors;
 
 
 @Service
+@RequiredArgsConstructor
 public class UserLibraryService {
 
   private final LibraryUserRepository userRepository;
@@ -34,21 +37,9 @@ public class UserLibraryService {
   private final BookRepository bookRepository;
   private final BookCopiesRepository bookCopiesRepository;
   private final ReservationRepository reservationRepository;
+  private final UserBookRepository userBookRepository;
   private final Scheduler scheduler;
 
-  @Autowired
-  public UserLibraryService(
-      LibraryUserRepository userRepository, UserBookRepository historyRepository,
-      BookRepository bookRepository,
-      BookCopiesRepository bookCopiesRepository,
-      ReservationRepository reservationRepository, Scheduler scheduler) {
-    this.userRepository = userRepository;
-    this.historyRepository = historyRepository;
-    this.bookRepository = bookRepository;
-    this.bookCopiesRepository = bookCopiesRepository;
-    this.reservationRepository = reservationRepository;
-    this.scheduler = scheduler;
-  }
 
   public int registerNewUser(UserHolder newUser) {
     if (!Validator.username(newUser.getUsername()))
@@ -70,7 +61,7 @@ public class UserLibraryService {
     return 1;
   }
 
-  public int editUser(EditUserHolder user, String username){
+  public int editUser(EditUserHolder user, String username) {
     Optional<LibraryUser> repoUser = getUserByUsername(username);
     if (!confirmPassword(user.getOldPassword(), repoUser.get().getPassword()))
       throw new AuthorisationException("Incorrect password");
@@ -80,9 +71,10 @@ public class UserLibraryService {
     return 1;
   }
 
-  public long reserveBook(long bookCopyId, String username){
+  public long reserveBook(long bookCopyId, String username) {
     Optional<BookCopy> copy = bookCopiesRepository.findById(bookCopyId);
-    if (copy.get().isBorrowed()) throw new BookIsOccupiedException("This book is already borrowed");
+    if (copy.get().isBorrowed())
+      throw new BookIsOccupiedException("This book is already borrowed");
     BookReservation reservation = BookReservation.builder()
         .userId(getUserId(username))
         .bookCopy(copy.get())
@@ -96,72 +88,90 @@ public class UserLibraryService {
     return save.getId();
   }
 
-  public int cancelReservation(long reservationId){
+  public int cancelReservation(long reservationId) {
     Optional<BookReservation> reservation = reservationRepository.findById(reservationId);
-    if (reservation.isEmpty()) throw new ResourceNotFoundException("There is no reservation with this ID in the database");
-    if (reservation.get().getState() != ReservationState.WAITING) throw new IllegalArgumentException("Reservation was already canceled or completed");
+    if (reservation.isEmpty())
+      throw new ResourceNotFoundException("There is no reservation with this ID in the database");
+    if (reservation.get().getState() != ReservationState.WAITING)
+      throw new IllegalArgumentException("Reservation was already canceled or completed");
     BookCopy bookCopy = reservation.get().getBookCopy();
     bookCopiesRepository.markAsFree(bookCopy.getId());
     reservationRepository.changeStatus(reservationId, ReservationState.CANCELED);
     return 1;
   }
 
-  public Page<ReservationHolder> getUserReservations(int offset, int limit, String username){
+  public Page<ReservationHolder> getUserReservations(int offset, int limit, String username) {
     scheduler.checkReservations();
     Pageable pageable = new LibraryPage(offset, limit);
-    var reservations = reservationRepository.findAllByUserId(getUserId(username), pageable);
+    var reservations = reservationRepository.findByStateAndUserId(ReservationState.WAITING, getUserId(username), pageable);
     var reservationHolder = createReservationHolder(reservations);
     return new PageImpl<>(reservationHolder, pageable, limit);
   }
 
+  public void extendBorrow(long borrowId, String username) {
+    Optional<UserBook> userBook = userBookRepository.findById(borrowId);
+    if (userBook.isEmpty())
+      throw new ResourceNotFoundException("Resources not found!");
+    var borrow = userBook.get();
+    if (borrow.getDateReturn() != null)
+      throw new IllegalArgumentException("Book was already returned");
+    if (isAlreadyExtended(borrow)){
+      throw new AlreadyExtendedException("Already extended");
+    }
+    DateTime d = new DateTime(borrow.getExpectedTime()).plusDays(7);
+    userBookRepository.setExpectedDate(borrowId, d.toDate());
+  }
+
+  private boolean isAlreadyExtended(UserBook borrow) {
+    var borrowDate = borrow.getDateIssued();
+    var expected = borrow.getExpectedTime();
+
+    Days days = Days.daysBetween(
+        LocalDate.fromDateFields(borrowDate),
+        LocalDate.fromDateFields(expected));
+    return days.getDays() > 30;
+  }
+
   private List<ReservationHolder> createReservationHolder(Page<BookReservation> reservations) {
     return reservations.stream()
-        .filter(e->e.getState()==ReservationState.WAITING)
+        .filter(e -> e.getState() == ReservationState.WAITING)
         .map(e -> {
-          long bookId = e.getBookCopy().getBookId();
-          return ReservationHolder.builder()
-              .id(e.getId())
-              .bookCopyId(e.getBookCopy().getId())
-              .userId(e.getUserId())
-              .bookId(bookId)
-              .dateReservation(e.getDateReservation())
-              .dateBorrow(e.getDateBorrow())
-              .title(bookRepository.getBookTitle(bookId))
-              .imageUrl(bookRepository.getBookImage(bookId))
-              .build();
-        }
-    ).collect(Collectors.toList());
+              long bookId = e.getBookCopy().getBookId();
+              return ReservationHolder.builder()
+                  .id(e.getId())
+                  .bookCopyId(e.getBookCopy().getId())
+                  .userId(e.getUserId())
+                  .bookId(bookId)
+                  .dateReservation(e.getDateReservation())
+                  .dateBorrow(e.getDateBorrow())
+                  .title(bookRepository.getBookTitle(bookId))
+                  .imageUrl(bookRepository.getBookImage(bookId))
+                  .build();
+            }
+        ).collect(Collectors.toList());
   }
 
   public Page<UserBookHolder> getUserHistory(int offset, int limit, String username) {
     Pageable pageable = new LibraryPage(offset, limit);
-    Page<UserBook> histories = historyRepository.findAllByUserId(getUserId(username), pageable);
-    List<UserBookHolder> userBookHolder = createHistoryHolder(histories);
+    Page<UserBook> histories = historyRepository.findReturnedByUserId(getUserId(username), pageable);
+    List<UserBookHolder> userBookHolder = createUserBooksHolder(histories);
     return new PageImpl<>(userBookHolder, pageable, limit);
   }
 
   public Page<UserBookHolder> getCurrentUserBooks(int offset, int limit, String username) {
     Pageable pageable = new LibraryPage(offset, limit);
-    Page<UserBook> histories = historyRepository.findAllByUserId(getUserId(username), pageable);
-    List<UserBookHolder> userBookHolder = createCurrentBooksHolder(histories);
+    Page<UserBook> histories = historyRepository.findCurrentByUserId(getUserId(username), pageable);
+    List<UserBookHolder> userBookHolder = createUserBooksHolder(histories);
     return new PageImpl<>(userBookHolder, pageable, limit);
   }
 
-  private List<UserBookHolder> createCurrentBooksHolder(Page<UserBook> histories) {
+  private List<UserBookHolder> createUserBooksHolder(Page<UserBook> histories) {
     return histories.stream()
-        .filter(e-> e.getDateReturn()==null)
         .map(this::createUserBookHolder)
         .collect(Collectors.toList());
   }
 
-  private List<UserBookHolder> createHistoryHolder(Page<UserBook> histories) {
-    return histories.stream()
-        .filter(e-> e.getDateReturn()!=null)
-        .map(this::createUserBookHolder)
-        .collect(Collectors.toList());
-  }
-
-  private UserBookHolder createUserBookHolder(UserBook e){
+  private UserBookHolder createUserBookHolder(UserBook e) {
     long bookId = e.getBookCopy().getBookId();
     return UserBookHolder.builder()
         .id(e.getId())
@@ -170,6 +180,7 @@ public class UserLibraryService {
         .bookId(bookId)
         .dateIssued(e.getDateIssued())
         .dateReturn(e.getDateReturn())
+        .expectedDate(e.getExpectedTime())
         .title(bookRepository.getBookTitle(bookId))
         .imageUrl(bookRepository.getBookImage(bookId))
         .build();
@@ -179,11 +190,11 @@ public class UserLibraryService {
     return Optional.ofNullable(userRepository.getUserByUsername(name));
   }
 
-  public String getBookTitle(long id){
+  public String getBookTitle(long id) {
     return bookRepository.getBookTitle(id);
   }
 
-  public String getBookImage(long id){
+  public String getBookImage(long id) {
     return bookRepository.getBookImage(id);
   }
 
@@ -195,7 +206,7 @@ public class UserLibraryService {
     return new UserBookDetails(totalBooks, countCurrent);
   }
 
-  private UUID getUserId(String username){
+  private UUID getUserId(String username) {
     LibraryUser user = userRepository.getUserByUsername(username);
     return user.getId();
   }

@@ -78,6 +78,11 @@ public class UserLibraryController {
     return service.getCurrentUserBooks(offset, limit, principal.getName());
   }
 
+  @GetMapping(path = "/currentBooks/extend/{borrowId}")
+  public void cancelReservation(@PathVariable("borrowId") long borrowId, Principal principal){
+      service.extendBorrow(borrowId, principal.getName());
+  }
+
   @GetMapping(path = "/reserve/{bookCopyId}")
   public long makeReservation(@PathVariable("bookCopyId") long bookCopyId, Principal principal){
       return service.reserveBook(bookCopyId, principal.getName());
@@ -87,4 +92,6 @@ public class UserLibraryController {
   public long cancelReservation(@PathVariable("reservationId") long reservationId){
     return service.cancelReservation(reservationId);
   }
+
+
 }
