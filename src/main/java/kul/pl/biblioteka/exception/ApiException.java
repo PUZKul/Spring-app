@@ -1,10 +1,11 @@
 package kul.pl.biblioteka.exception;
 
-import org.springframework.http.HttpStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.ZonedDateTime;
 
 public class ApiException {
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
     private final ZonedDateTime timestamp;
     private final int status;
     private final String error;
