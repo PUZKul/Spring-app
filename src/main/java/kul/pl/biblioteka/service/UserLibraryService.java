@@ -66,7 +66,7 @@ public class UserLibraryService {
     if (!confirmPassword(user.getOldPassword(), repoUser.get().getPassword()))
       throw new AuthorisationException("Incorrect password");
 
-    var userDataUpdater = new UserDataUpdater(userRepository);
+    var userDataUpdater = new UserDataUpdater(userRepository, userRepository);
     userDataUpdater.update(user, username);
     return 1;
   }
