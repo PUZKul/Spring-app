@@ -5,13 +5,13 @@ import kul.pl.biblioteka.utils.BlackListStatus;
 import lombok.Data;
 import lombok.Value;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 import java.util.UUID;
 
 @Data
+@Entity
+@Table(name = "black_list")
 public class BlackList {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +22,10 @@ public class BlackList {
     private String comment;
     private BlackListStatus status;
 
-    public BlackList(UUID userId, Date dateFrom, Date dateTo, String comment, BlackListStatus status) {
+  public BlackList() {
+  }
+
+  public BlackList(UUID userId, Date dateFrom, Date dateTo, String comment, BlackListStatus status) {
         this.userId = userId;
         this.dateFrom = dateFrom;
         this.dateTo = dateTo;

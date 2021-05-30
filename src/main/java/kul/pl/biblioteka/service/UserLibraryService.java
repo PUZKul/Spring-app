@@ -12,9 +12,7 @@ import kul.pl.biblioteka.repository.*;
 import kul.pl.biblioteka.schedule.Scheduler;
 import kul.pl.biblioteka.security.LibraryUserRole;
 import kul.pl.biblioteka.security.PasswordConfig;
-import kul.pl.biblioteka.utils.LibraryPage;
-import kul.pl.biblioteka.utils.ReservationState;
-import kul.pl.biblioteka.utils.Validator;
+import kul.pl.biblioteka.utils.*;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
@@ -38,6 +36,7 @@ public class UserLibraryService {
   private final BookCopiesRepository bookCopiesRepository;
   private final ReservationRepository reservationRepository;
   private final UserBookRepository userBookRepository;
+  private final MessageRepository messageRepository;
   private final Scheduler scheduler;
 
 
@@ -61,8 +60,18 @@ public class UserLibraryService {
     return 1;
   }
 
-  public void changeLimit(int limit, String username){
-    // TODO implement asking for changing limit
+  public long changeLimit(String message, String username){
+
+    Message build = Message.builder()
+        .author(username)
+        .title(MessageType.LIMIT)
+        .status(MessageStatus.PENDING)
+        .dateIssued(new Date())
+        .message(message)
+        .build();
+
+    Message save = messageRepository.save(build);
+    return save.getId();
   }
 
   public int editUser(EditUserHolder user, String username) {
@@ -188,6 +197,7 @@ public class UserLibraryService {
         .bookCopyId(e.getBookCopy().getId())
         .userId(e.getUserId())
         .bookId(bookId)
+        .username(userRepository.getUsername(e.getUserId()))
         .dateIssued(e.getDateIssued())
         .dateReturn(e.getDateReturn())
         .expectedDate(e.getExpectedTime())

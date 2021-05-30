@@ -1,6 +1,9 @@
 package kul.pl.biblioteka.repository;
 
 import kul.pl.biblioteka.model.LibraryUser;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -67,4 +70,20 @@ public interface LibraryUserRepository extends CrudRepository<LibraryUser, UUID>
 
   @Query("SELECT u.maxBooks FROM LibraryUser u WHERE u.id = :userId")
   int getBookLimit(@Param("userId") UUID userId);
+
+  @Transactional
+  @Modifying
+  @Query(value = "UPDATE users SET max_books = ? WHERE id = ?", nativeQuery = true )
+  void changeBookLimit(int limit, UUID userId);
+
+  @Transactional
+  @Modifying
+  @Query(value = "UPDATE users SET comment = ? WHERE id = ?", nativeQuery = true )
+  void setComment(String comment, UUID userId);
+
+  @Query(value = "SELECT * FROM users where nick like ?%", nativeQuery = true)
+  Page<LibraryUser> findAllByName(String username, Pageable pageable);
+
+  @Query(value = "SELECT u FROM LibraryUser u")
+  Page<LibraryUser> findAll(Pageable pageable);
 }

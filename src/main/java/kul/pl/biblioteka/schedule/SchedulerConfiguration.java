@@ -2,10 +2,7 @@ package kul.pl.biblioteka.schedule;
 
 import lombok.RequiredArgsConstructor;
 
-import kul.pl.biblioteka.repository.BookCopiesRepository;
-import kul.pl.biblioteka.repository.LibraryUserRepository;
-import kul.pl.biblioteka.repository.ReservationRepository;
-import kul.pl.biblioteka.repository.UserBookRepository;
+import kul.pl.biblioteka.repository.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -17,6 +14,7 @@ class SchedulerConfiguration {
   private final ReservationRepository reservationRepository;
   private final UserBookRepository userBookRepository;
   private final BookCopiesRepository copiesRepository;
+  private final BlackListRepository blackListRepository;
 
   @Bean
   Scheduler scheduler(){
@@ -24,7 +22,8 @@ class SchedulerConfiguration {
         userRepository,
         reservationRepository,
         userBookRepository,
-        copiesRepository
+        copiesRepository,
+        blackListRepository
     );
   }
 }

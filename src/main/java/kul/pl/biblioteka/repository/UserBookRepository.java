@@ -46,4 +46,7 @@ public interface UserBookRepository extends JpaRepository<UserBook, Long> {
   @Modifying
   @Query("UPDATE UserBook b SET b.dateReturn = :date WHERE b.id = :id")
   void setReturnDate(@Param("id") long borrowId, @Param("date") Date date);
+
+  @Query("select b from UserBook b WHERE b.dateReturn is null")
+  Page<UserBook> findCurrent(Pageable pageable);
 }

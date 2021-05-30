@@ -722,5 +722,38 @@
         </div>
       </section>
 
+
+      <!-- Method 17 -->
+      <section>
+        <div class="d-flex _h4 mb-3 navbar-expand-lg">
+
+          <div class="flex-grow-1 pe-5">Ask for increasing book limit</div>
+          <div class="pe-5">
+            <div class=" collapse navbar-collapse "><small class="text-muted">/api/library/users/request/limit/{message}</small></div>
+          </div>
+          <div>
+            <button class="btn btn-primary-lib" id="button17" onclick="change(this)" type="button" data-bs-toggle="collapse" data-bs-target="#collapse17" aria-expanded="false" aria-controls="collapse17">More</button>
+          </div>
+        </div>
+        <div class="collapse mb-3 " id="collapse17">
+          <div class="card card-body">
+            <h3>Description</h3>
+            <p>This method allows to send request for increasing user book limit. It returns id of a new request</p>
+            <p> It takes one parameter <i>message</i> which is a string value with message. The message should include reason why user wants to change the limit and the limit value </p>
+            <h3>Authentication</h3>
+            <p>Require</p>
+            <h3>Request method</h3>
+            <p>POST</p>
+            <h3>Return value</h3>
+            <p>long </p>
+            <h3>Errors</h3>
+            <ul class="list-unstyled">
+              <li>BAD_REQUEST (400) - it means parameter is invalid</li>
+              <li>FORBIDDEN (403) - missing or invalid token or password</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
 </div>
 </body>

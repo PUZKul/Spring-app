@@ -1,9 +1,11 @@
 package kul.pl.biblioteka.api;
 
 import kul.pl.biblioteka.holder.EditUserHolder;
+import kul.pl.biblioteka.holder.IncreaseLimit;
 import kul.pl.biblioteka.holder.ReservationHolder;
 import kul.pl.biblioteka.holder.UserBookHolder;
 import kul.pl.biblioteka.model.LibraryUser;
+import kul.pl.biblioteka.model.Message;
 import kul.pl.biblioteka.service.AdminLibraryService;
 import kul.pl.biblioteka.utils.JSONFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/library/admins")
@@ -31,19 +34,21 @@ public class AdminLibraryController {
 
   @PostMapping("/confirmReturn/{borrowId}")
   public void confirmReturn(@PathVariable("borrowId") long borrowId) {
-     service.confirmBookReturn(borrowId);
+    service.confirmBookReturn(borrowId);
   }
 
   @GetMapping("/reservations")
-  public List<ReservationHolder> getWaitingReservations(@RequestParam("limit") int limit,
-                                                        @RequestParam("page") int page,
-                                                        @RequestParam(value = "username", required = false) String username) {
+  public List<ReservationHolder> getWaitingReservations(
+      @RequestParam("limit") int limit,
+      @RequestParam("page") int page,
+      @RequestParam(value = "username", required = false) String username) {
     int offset = page * limit;
     return service.getReservationList(offset, limit, Objects.requireNonNullElse(username, ""));
   }
 
   @GetMapping("/reservations/{reservationId}")
-  public Optional<ReservationHolder> getReservation(@PathVariable("reservationId") long reservationId){
+  public Optional<ReservationHolder> getReservation(
+      @PathVariable("reservationId") long reservationId) {
     return service.getReservation(reservationId);
   }
 
@@ -52,19 +57,48 @@ public class AdminLibraryController {
     service.cancelReservation(reservationId);
   }
 
-  @GetMapping("/users/{userId}")
-  public MappingJacksonValue getUserData(@PathVariable("userId") UUID userId){
-    Optional<LibraryUser> user = service.getUserDataById(userId);
-    return new JSONFilter.Builder(user)
-        .exclude("enabled")
-        .setFilter("userFilter")
-        .build()
-        .getMapper();
+  @GetMapping("/users")
+  public List<LibraryUser> getUsers(
+      @RequestParam("limit") int limit,
+      @RequestParam("page") int page,
+      @RequestParam(value = "username", required = false) String username) {
+    int offset = page * limit;
+    return service.getUsers(offset, limit, Objects.requireNonNullElse(username, ""));
   }
 
-  @PutMapping("/users/edit/{username}")
-  public void editUserData(@RequestBody EditUserHolder holder, @PathVariable("username") String username){
-     service.editUserData(holder, username);
+  @GetMapping("/users/{userId}")
+  public Optional<LibraryUser> getUserData(@PathVariable("userId") UUID userId) {
+    return service.getUserDataById(userId);
+  }
+
+  @PostMapping("/users/edit/{username}")
+  public void editUserData(
+      @RequestBody EditUserHolder holder, @PathVariable("username") String username) {
+    service.editUserData(holder, username);
+  }
+
+  @GetMapping("/requests")
+  public List<Message> getLimitRequests(
+      @RequestParam("limit") int limit,
+      @RequestParam("page") int page,
+      @RequestParam(value = "username", required = false) String username) {
+    int offset = page * limit;
+    return service.getLimitRequests(offset, limit, username);
+  }
+
+  @PostMapping("/users/{username}/bookLimit}")
+  public void increaseLimit(
+      @RequestBody IncreaseLimit holder, @PathVariable("username") String username) {
+    service.increaseLimit(holder, username);
+  }
+
+  @GetMapping("/rental")
+  public List<UserBookHolder> getCurrentBooks(
+      @RequestParam("limit") int limit,
+      @RequestParam("page") int page,
+      @RequestParam(value = "username", required = false) String username) {
+    int offset = page * limit;
+    return service.getBookRental(offset, limit, username);
   }
 
 }

@@ -15,7 +15,6 @@ import java.util.UUID;
 @Entity
 @Data
 @Table(name = "users")
-@JsonFilter("userFilter")
 public class LibraryUser {
     @Id
     private UUID id;

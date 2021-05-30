@@ -18,4 +18,5 @@ public class UserBookHolder {
   private Date dateIssued;
   private Date dateReturn;
   private Date expectedDate;
+  private String username;
 }

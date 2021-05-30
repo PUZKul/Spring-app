@@ -32,14 +32,8 @@ public class UserLibraryController {
     }
 
     @GetMapping
-    public MappingJacksonValue getUserByUsername(Principal principal){
-        Optional<LibraryUser> user = service.getUserByUsername(principal.getName());
-
-        return new JSONFilter.Builder(user)
-                   .exclude("role", "comment", "enabled", "banned")
-                   .setFilter("userFilter")
-                   .build()
-                   .getMapper();
+    public Optional<LibraryUser> getUserByUsername(Principal principal){
+        return service.getUserByUsername(principal.getName());
     }
 
     @PutMapping(path = "/edit")
@@ -93,5 +87,9 @@ public class UserLibraryController {
     return service.cancelReservation(reservationId);
   }
 
+  @PostMapping("/request/limit/{message}")
+  public long askToIncreaseLimit(@PathVariable("message") String message, Principal principal){
+      return service.changeLimit(message, principal.getName());
+  }
 
 }

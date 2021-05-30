@@ -1,20 +1,22 @@
 package kul.pl.biblioteka.service;
 
-import kul.pl.biblioteka.exception.AuthorisationException;
 import kul.pl.biblioteka.holder.EditUserHolder;
+
 import lombok.RequiredArgsConstructor;
 
 import kul.pl.biblioteka.exception.AlreadyBorrowedException;
 import kul.pl.biblioteka.exception.ResourceNotFoundException;
+import kul.pl.biblioteka.holder.IncreaseLimit;
 import kul.pl.biblioteka.holder.ReservationHolder;
+import kul.pl.biblioteka.holder.UserBookHolder;
 import kul.pl.biblioteka.model.BookReservation;
 import kul.pl.biblioteka.model.LibraryUser;
+import kul.pl.biblioteka.model.Message;
 import kul.pl.biblioteka.model.UserBook;
 import kul.pl.biblioteka.repository.*;
 import kul.pl.biblioteka.schedule.Scheduler;
 import kul.pl.biblioteka.utils.LibraryPage;
 import kul.pl.biblioteka.utils.ReservationState;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -29,68 +31,105 @@ import static kul.pl.biblioteka.utils.ReservationState.WAITING;
 @Service
 @RequiredArgsConstructor
 public class AdminLibraryService {
-    private final LibraryUserRepository userRepository;
-    private final BookRepository bookRepository;
-    private final UserBookRepository userBookRepository;
-    private final BookCopiesRepository bookCopiesRepository;
-    private final ReservationRepository reservationRepository;
-    private final Scheduler scheduler;
 
-    public long confirmBorrow(long reservationId){
-        Optional<BookReservation> reservation = reservationRepository.findById(reservationId);
-        if(reservation.isEmpty()) throw new ResourceNotFoundException("Reservation not exist");
-        if(reservation.get().getState() == ReservationState.BORROWED) throw new AlreadyBorrowedException("Reservation already realized");
+  private final LibraryUserRepository userRepository;
+  private final BookRepository bookRepository;
+  private final UserBookRepository userBookRepository;
+  private final BookCopiesRepository bookCopiesRepository;
+  private final ReservationRepository reservationRepository;
+  private final MessageRepository messageRepository;
+  private final Scheduler scheduler;
 
-        if (!isUserUnderLimit(reservation.get().getUserId())){
-            throw new IllegalStateException("User reached the limit");
-        }
+  public long confirmBorrow(long reservationId) {
+    Optional<BookReservation> reservation = reservationRepository.findById(reservationId);
+    if (reservation.isEmpty())
+      throw new ResourceNotFoundException("Reservation not exist");
+    if (reservation.get().getState() == ReservationState.BORROWED)
+      throw new AlreadyBorrowedException("Reservation already realized");
 
-        UserBook userBook = new UserBook(
-                reservation.get().getUserId(),
-                reservation.get().getBookCopy(),
-                new Date(),
-                null,
-                reservationId,
-                addDaysFromToday(30));
-        UserBook save = userBookRepository.save(userBook);
-        reservationRepository.changeStatus(reservation.get().getId(), ReservationState.BORROWED);
-        return save.getId();
+    if (!isUserUnderLimit(reservation.get().getUserId())) {
+      throw new IllegalStateException("User reached the limit");
     }
 
-    private boolean isUserUnderLimit(UUID userId) {
-        int limit = userRepository.getBookLimit(userId);
-        int current = userBookRepository.getCurrentBooksNumber(userId);
-        int reserveNo = reservationRepository.getCurrentReservationNumber(userId);
-        return (current + reserveNo) < limit;
-    }
+    UserBook userBook = new UserBook(
+        reservation.get().getUserId(),
+        reservation.get().getBookCopy(),
+        new Date(),
+        null,
+        reservationId,
+        addDaysFromToday(30));
+    UserBook save = userBookRepository.save(userBook);
+    reservationRepository.changeStatus(reservation.get().getId(), ReservationState.BORROWED);
+    return save.getId();
+  }
 
-    public void confirmBookReturn(long borrowId){
-        Optional<UserBook> userBook = userBookRepository.findById(borrowId);
-        if(userBook.isEmpty()) throw new ResourceNotFoundException("Resource not found");
-        userBookRepository.setReturnDate(borrowId, new Date());
-        bookCopiesRepository.markAsFree(userBook.get().getBookCopy().getId());
-    }
+  private boolean isUserUnderLimit(UUID userId) {
+    int limit = userRepository.getBookLimit(userId);
+    int current = userBookRepository.getCurrentBooksNumber(userId);
+    int reserveNo = reservationRepository.getCurrentReservationNumber(userId);
+    return (current + reserveNo) < limit;
+  }
 
-    public void editUserData(EditUserHolder user, String username){
-        var userDataUpdater = new UserDataUpdater(userRepository, userRepository);
-        userDataUpdater.update(user, username);
-    }
 
-    public List<ReservationHolder> getReservationList(int offset, int limit, String username){
-      scheduler.checkReservations();
-      Pageable pageable = new LibraryPage(offset, limit);
-      Page<BookReservation> reservations;
-      if(isNullOrEmpty(username))
-        reservations = reservationRepository.findAllByState(WAITING, pageable);
-      else
-        reservations = reservationRepository.findByStateAndUserId(WAITING, getUserId(username), pageable);
+  public void confirmBookReturn(long borrowId) {
+    Optional<UserBook> userBook = userBookRepository.findById(borrowId);
+    if (userBook.isEmpty())
+      throw new ResourceNotFoundException("Resource not found");
+    userBookRepository.setReturnDate(borrowId, new Date());
+    bookCopiesRepository.markAsFree(userBook.get().getBookCopy().getId());
+  }
 
-      return createHolder(reservations);
-    }
+  public void editUserData(EditUserHolder user, String username) {
+    var userDataUpdater = new UserDataUpdater(userRepository, userRepository);
+    userDataUpdater.update(user, username);
+  }
 
-  public Optional<ReservationHolder> getReservation(long id){
+  public List<ReservationHolder> getReservationList(int offset, int limit, String username) {
+    scheduler.checkReservations();
+    Pageable pageable = new LibraryPage(offset, limit);
+    Page<BookReservation> reservations;
+    if (isNullOrEmpty(username))
+      reservations = reservationRepository.findAllByState(WAITING, pageable);
+    else
+      reservations =
+          reservationRepository.findByStateAndUserId(WAITING, getUserId(username), pageable);
+
+    return createHolder(reservations);
+  }
+
+  public List<UserBookHolder> getBookRental(int offset, int limit, String username) {
+    scheduler.checkBorrowedBooks();
+
+    Pageable pageable = new LibraryPage(offset, limit);
+    Page<UserBook> rentals;
+    if (isNullOrEmpty(username))
+      rentals = userBookRepository.findCurrent(pageable);
+    else
+      rentals = userBookRepository.findCurrentByUserId(getUserId(username), pageable);
+
+    return createBookHolder(rentals);
+  }
+
+  private List<UserBookHolder> createBookHolder(Page<UserBook> rentals) {
+    return rentals.stream()
+        .map(e -> UserBookHolder.builder()
+            .id(e.getId())
+            .bookCopyId(e.getBookCopy().getId())
+            .dateIssued(e.getDateIssued())
+            .userId(e.getUserId())
+            .bookId(e.getBookCopy().getBookId())
+            .expectedDate(e.getExpectedTime())
+            .username(userRepository.getUsername(e.getUserId()))
+            .title(bookRepository.getBookTitle(e.getBookCopy().getBookId()))
+            .imageUrl(bookRepository.getBookImage(e.getBookCopy().getBookId()))
+            .build())
+        .collect(Collectors.toList());
+  }
+
+  public Optional<ReservationHolder> getReservation(long id) {
     Optional<BookReservation> reservation = reservationRepository.findById(id);
-    if (reservation.isEmpty()) throw new ResourceNotFoundException("Reservation not found!");
+    if (reservation.isEmpty())
+      throw new ResourceNotFoundException("Reservation not found!");
     BookReservation e = reservation.get();
 
     return Optional.of(ReservationHolder.builder()
@@ -120,23 +159,58 @@ public class AdminLibraryService {
         .collect(Collectors.toList());
   }
 
-  public void cancelReservation(long reservationId){
-      Optional<BookReservation> reservation = reservationRepository.findById(reservationId);
-      if(reservation.isEmpty()) throw new ResourceNotFoundException("Reservation does not exist");
-      if(reservation.get().getState() == ReservationState.BORROWED) throw new AlreadyBorrowedException("Reservation already realized");
-      if(reservation.get().getState() == ReservationState.CANCELED) throw new IllegalArgumentException("Reservation already canceled");
+  public void cancelReservation(long reservationId) {
+    Optional<BookReservation> reservation = reservationRepository.findById(reservationId);
+    if (reservation.isEmpty())
+      throw new ResourceNotFoundException("Reservation does not exist");
+    if (reservation.get().getState() == ReservationState.BORROWED)
+      throw new AlreadyBorrowedException("Reservation already realized");
+    if (reservation.get().getState() == ReservationState.CANCELED)
+      throw new IllegalArgumentException("Reservation already canceled");
 
-      reservationRepository.changeStatus(reservation.get().getId(), ReservationState.CANCELED);
-    }
+    reservationRepository.changeStatus(reservation.get().getId(), ReservationState.CANCELED);
+  }
 
-    public Optional<LibraryUser> getUserDataById(UUID id){
-      return userRepository.findById(id);
-    }
+  public Optional<LibraryUser> getUserDataById(UUID id) {
+    return userRepository.findById(id);
+  }
 
-    private UUID getUserId(String username){
-      LibraryUser user = userRepository.getUserByUsername(username);
-      if(user == null) throw new ResourceNotFoundException("Given username not exist");
-      return user.getId();
-    }
+  private UUID getUserId(String username) {
+    LibraryUser user = userRepository.getUserByUsername(username);
+    if (user == null)
+      throw new ResourceNotFoundException("Given username not exist");
+    return user.getId();
+  }
 
+  public List<Message> getLimitRequests(int offset, int limit, String username) {
+    Pageable pageable = new LibraryPage(offset, limit);
+    Page<Message> allRequests;
+    if (isNullOrEmpty(username))
+      allRequests = messageRepository.findAllRequests(pageable);
+    else
+      allRequests = messageRepository.findAllRequestsByUsername(username, pageable);
+    return allRequests.getContent();
+  }
+
+  public void increaseLimit(IncreaseLimit holder, String username) {
+    LibraryUser user = userRepository.getUserByUsername(username);
+    if (user == null)
+      throw new ResourceNotFoundException("Username not found");
+
+    UUID userId = getUserId(username);
+    userRepository.changeBookLimit(holder.getLimit(), userId);
+    if (!isNullOrEmpty(holder.getComment()))
+      userRepository.setComment(holder.getComment(), userId);
+  }
+
+  public List<LibraryUser> getUsers(int offset, int limit, String username) {
+    Pageable pageable = new LibraryPage(offset, limit);
+    Page<LibraryUser> all;
+    if (isNullOrEmpty(username))
+      all =  userRepository.findAll(pageable);
+    else
+      all = userRepository.findAllByName(username, pageable);
+    if(all.getContent().size() == 0) throw new ResourceNotFoundException("Not found");
+    return all.getContent();
+  }
 }
