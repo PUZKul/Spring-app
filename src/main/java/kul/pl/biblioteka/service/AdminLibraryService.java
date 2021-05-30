@@ -1,5 +1,7 @@
 package kul.pl.biblioteka.service;
 
+import kul.pl.biblioteka.exception.AuthorisationException;
+import kul.pl.biblioteka.holder.EditUserHolder;
 import lombok.RequiredArgsConstructor;
 
 import kul.pl.biblioteka.exception.AlreadyBorrowedException;
@@ -39,6 +41,10 @@ public class AdminLibraryService {
         if(reservation.isEmpty()) throw new ResourceNotFoundException("Reservation not exist");
         if(reservation.get().getState() == ReservationState.BORROWED) throw new AlreadyBorrowedException("Reservation already realized");
 
+        if (!isUserUnderLimit(reservation.get().getUserId())){
+            throw new IllegalStateException("User reached the limit");
+        }
+
         UserBook userBook = new UserBook(
                 reservation.get().getUserId(),
                 reservation.get().getBookCopy(),
@@ -51,7 +57,26 @@ public class AdminLibraryService {
         return save.getId();
     }
 
-  public List<ReservationHolder> getReservationList(int offset, int limit, String username){
+    private boolean isUserUnderLimit(UUID userId) {
+        int limit = userRepository.getBookLimit(userId);
+        int current = userBookRepository.getCurrentBooksNumber(userId);
+        int reserveNo = reservationRepository.getCurrentReservationNumber(userId);
+        return (current + reserveNo) < limit;
+    }
+
+    public void confirmBookReturn(long borrowId){
+        Optional<UserBook> userBook = userBookRepository.findById(borrowId);
+        if(userBook.isEmpty()) throw new ResourceNotFoundException("Resource not found");
+        userBookRepository.setReturnDate(borrowId, new Date());
+        bookCopiesRepository.markAsFree(userBook.get().getBookCopy().getId());
+    }
+
+    public void editUserData(EditUserHolder user, String username){
+        var userDataUpdater = new UserDataUpdater(userRepository, userRepository);
+        userDataUpdater.update(user, username);
+    }
+
+    public List<ReservationHolder> getReservationList(int offset, int limit, String username){
       scheduler.checkReservations();
       Pageable pageable = new LibraryPage(offset, limit);
       Page<BookReservation> reservations;

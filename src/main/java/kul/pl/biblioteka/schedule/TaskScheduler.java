@@ -1,14 +1,16 @@
 package kul.pl.biblioteka.schedule;
 
+import kul.pl.biblioteka.model.BlackList;
+import kul.pl.biblioteka.repository.*;
+import kul.pl.biblioteka.utils.BlackListStatus;
 import lombok.RequiredArgsConstructor;
 
 import kul.pl.biblioteka.model.BookReservation;
 import kul.pl.biblioteka.model.LibraryUser;
-import kul.pl.biblioteka.repository.BookCopiesRepository;
-import kul.pl.biblioteka.repository.LibraryUserRepository;
-import kul.pl.biblioteka.repository.ReservationRepository;
-import kul.pl.biblioteka.repository.UserBookRepository;
 import kul.pl.biblioteka.utils.ReservationState;
+import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 
@@ -16,7 +18,9 @@ import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
+import static kul.pl.biblioteka.utils.BlackListStatus.BLOCKED;
 
+@Slf4j
 @RequiredArgsConstructor
 class TaskScheduler implements Scheduler {
 
@@ -29,6 +33,7 @@ class TaskScheduler implements Scheduler {
   private final ReservationRepository reservationRepository;
   private final UserBookRepository userBookRepository;
   private final BookCopiesRepository copiesRepository;
+  private final BlackListRepository blackListRepository;
 
   @Override
   public void checkReservations() {
@@ -48,8 +53,8 @@ class TaskScheduler implements Scheduler {
     if(BORROWED_CHECKED) return;
     var borrowed = userBookRepository.findAllBorrowed();
     borrowed.stream()
-        .filter(userBook -> userBook.getDateIssued().compareTo(userBook.getExpectedTime()) > 0)
-        .forEach(userBook -> addWarning(userBook.getUserId()));
+        .filter(userBook -> userBook.getExpectedTime().compareTo(new Date()) < 0)
+        .forEach(e -> addWarning(e.getUserId()));
     BORROWED_CHECKED = true;
   }
 
@@ -66,7 +71,19 @@ class TaskScheduler implements Scheduler {
 
   private void moveUserToBlackList(UUID userId, String comment) {
     userRepository.setBanned(userId);
-    // TODO add black list model and repository
+    var blackList = createBlackListElement(userId, comment);
+    blackListRepository.save(blackList);
+  }
+
+  private BlackList createBlackListElement(UUID userId, String comment) {
+    Optional<LibraryUser> user = userRepository.findById(userId);
+    return new BlackList(
+            user.get().getId(),
+            new Date(),
+            null,
+            comment,
+            BLOCKED
+    );
   }
 
   private void cancelReservation(BookReservation e) {

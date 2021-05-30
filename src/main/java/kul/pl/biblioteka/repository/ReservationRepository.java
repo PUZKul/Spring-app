@@ -35,4 +35,7 @@ public interface ReservationRepository extends JpaRepository<BookReservation, Lo
   @Query("SELECT r FROM BookReservation r WHERE r.state = :state and r.userId = :userId")
   Page<BookReservation> findByStateAndUserId(@Param("state") ReservationState state, @Param("userId") UUID userId, Pageable pageable);
 
+  @Query(value = "SELECT count(*) from reservations where user_id = ? and state = 'WAITING'", nativeQuery = true)
+  int getCurrentReservationNumber(UUID userId);
+
 }

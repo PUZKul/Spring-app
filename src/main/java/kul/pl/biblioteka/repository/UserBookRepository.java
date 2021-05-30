@@ -38,4 +38,12 @@ public interface UserBookRepository extends JpaRepository<UserBook, Long> {
 
   @Query("select b from UserBook b WHERE b.userId = :userId AND b.dateReturn is not null")
   Page<UserBook> findReturnedByUserId(@Param("userId")UUID userId, Pageable pageable);
+
+  @Query(value = "select count(*) from borrow where user_id = ? and date_return is null", nativeQuery = true)
+  int getCurrentBooksNumber(UUID userId);
+
+  @Transactional
+  @Modifying
+  @Query("UPDATE UserBook b SET b.dateReturn = :date WHERE b.id = :id")
+  void setReturnDate(@Param("id") long borrowId, @Param("date") Date date);
 }

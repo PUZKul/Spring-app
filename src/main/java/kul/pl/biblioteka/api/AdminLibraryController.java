@@ -1,5 +1,6 @@
 package kul.pl.biblioteka.api;
 
+import kul.pl.biblioteka.holder.EditUserHolder;
 import kul.pl.biblioteka.holder.ReservationHolder;
 import kul.pl.biblioteka.holder.UserBookHolder;
 import kul.pl.biblioteka.model.LibraryUser;
@@ -28,6 +29,11 @@ public class AdminLibraryController {
     return service.confirmBorrow(reservationId);
   }
 
+  @PostMapping("/confirmReturn/{borrowId}")
+  public void confirmReturn(@PathVariable("borrowId") long borrowId) {
+     service.confirmBookReturn(borrowId);
+  }
+
   @GetMapping("/reservations")
   public List<ReservationHolder> getWaitingReservations(@RequestParam("limit") int limit,
                                                         @RequestParam("page") int page,
@@ -54,6 +60,11 @@ public class AdminLibraryController {
         .setFilter("userFilter")
         .build()
         .getMapper();
+  }
+
+  @PutMapping("/users/edit/{username}")
+  public void editUserData(@RequestBody EditUserHolder holder, @PathVariable("username") String username){
+     service.editUserData(holder, username);
   }
 
 }

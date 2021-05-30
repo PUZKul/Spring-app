@@ -13,8 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 @ControllerAdvice
 public class ApiExceptionHandler {
 
-    @ExceptionHandler(value = {IllegalArgumentException.class})
-    public ResponseEntity<Object> handlerApiRequestException(HttpServletRequest req, IllegalArgumentException e){
+    @ExceptionHandler(value = {IllegalArgumentException.class, IllegalStateException.class})
+    public ResponseEntity<Object> handlerApiRequestException(HttpServletRequest req, RuntimeException e){
         HttpStatus status = HttpStatus.BAD_REQUEST;
 
         ApiException exception = new ApiException(

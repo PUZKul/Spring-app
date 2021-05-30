@@ -64,4 +64,7 @@ public interface LibraryUserRepository extends CrudRepository<LibraryUser, UUID>
   @Modifying
   @Query(value = "UPDATE users SET warnings = warnings + 1 WHERE id=?", nativeQuery = true)
   void addWarning(UUID userId);
+
+  @Query("SELECT u.maxBooks FROM LibraryUser u WHERE u.id = :userId")
+  int getBookLimit(@Param("userId") UUID userId);
 }

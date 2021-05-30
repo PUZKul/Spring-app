@@ -61,6 +61,10 @@ public class UserLibraryService {
     return 1;
   }
 
+  public void changeLimit(int limit, String username){
+    // TODO implement asking for changing limit
+  }
+
   public int editUser(EditUserHolder user, String username) {
     Optional<LibraryUser> repoUser = getUserByUsername(username);
     if (!confirmPassword(user.getOldPassword(), repoUser.get().getPassword()))
@@ -75,6 +79,11 @@ public class UserLibraryService {
     Optional<BookCopy> copy = bookCopiesRepository.findById(bookCopyId);
     if (copy.get().isBorrowed())
       throw new BookIsOccupiedException("This book is already borrowed");
+
+    if (!isUserUnderLimit(getUserId(username))){
+      throw new IllegalStateException("User reached the limit");
+    }
+
     BookReservation reservation = BookReservation.builder()
         .userId(getUserId(username))
         .bookCopy(copy.get())
@@ -159,6 +168,7 @@ public class UserLibraryService {
   }
 
   public Page<UserBookHolder> getCurrentUserBooks(int offset, int limit, String username) {
+    scheduler.checkBorrowedBooks();
     Pageable pageable = new LibraryPage(offset, limit);
     Page<UserBook> histories = historyRepository.findCurrentByUserId(getUserId(username), pageable);
     List<UserBookHolder> userBookHolder = createUserBooksHolder(histories);
@@ -230,4 +240,10 @@ public class UserLibraryService {
         LibraryUserRole.USER.name());
   }
 
+  private boolean isUserUnderLimit(UUID userId) {
+    int limit = userRepository.getBookLimit(userId);
+    int current = userBookRepository.getCurrentBooksNumber(userId);
+    int reserveNo = reservationRepository.getCurrentReservationNumber(userId);
+    return (current + reserveNo) < limit;
+  }
 }
