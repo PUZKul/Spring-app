@@ -96,7 +96,7 @@ public class AdminLibraryService {
   private boolean isUserUnderLimit(UUID userId) {
     int limit = userRepository.getBookLimit(userId);
     int current = userBookRepository.getCurrentBooksNumber(userId);
-    int reserveNo = reservationRepository.getCurrentReservationNumber(userId);
+    int reserveNo = reservationRepository.getCurrentReservationNumber(userId) - 1;
     return (current + reserveNo) < limit;
   }
 
