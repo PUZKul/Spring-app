@@ -1,11 +1,14 @@
 package kul.pl.biblioteka.service;
 
+import kul.pl.biblioteka.exception.ResourceNotFoundException;
 import kul.pl.biblioteka.holder.EditUserHolder;
+import kul.pl.biblioteka.model.LibraryUser;
 import kul.pl.biblioteka.repository.LibraryUserRepository;
 import kul.pl.biblioteka.security.PasswordConfig;
 import kul.pl.biblioteka.utils.Validator;
 
 import java.util.Objects;
+import java.util.UUID;
 import javax.persistence.EntityExistsException;
 
 import static org.apache.logging.log4j.util.Strings.isEmpty;
@@ -27,6 +30,7 @@ class UserDataUpdater {
     var address = Objects.requireNonNullElse(user.getAddress(),"").trim();
     var phone = Objects.requireNonNullElse(user.getPhone(), "").trim();
     var lastName = Objects.requireNonNullElse(user.getLastName(), "").trim();
+    var comment = Objects.requireNonNullElse(user.getComment(), "").trim();
     if (!isEmpty(email)){
       updateEmail(email, username);
     }
@@ -45,6 +49,13 @@ class UserDataUpdater {
     if(!isEmpty(phone)){
       updatePhone(phone, username);
     }
+    if(!isEmpty(comment)){
+      updateComment(comment, username);
+    }
+  }
+
+  private void updateComment(String comment, String username) {
+    repository.setComment(comment, username);
   }
 
   private void updatePhone(String phone, String username) {
@@ -80,5 +91,12 @@ class UserDataUpdater {
     if (repository.isEmailExist(email) > 0)
       throw new EntityExistsException("User with given email already exist");
     repository.updateEmail(email, username);
+  }
+
+  private UUID getUserId(String username) {
+    LibraryUser user = userRepository.getUserByUsername(username);
+    if (user == null)
+      throw new ResourceNotFoundException("Given username not exist");
+    return user.getId();
   }
 }

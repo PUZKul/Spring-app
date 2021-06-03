@@ -92,4 +92,9 @@ public class UserLibraryController {
       return service.changeLimit(message, principal.getName());
   }
 
+  @GetMapping("/isBanned")
+  public boolean isBanned(Principal principal){
+      return service.isBanned(principal.getName());
+  }
+
 }

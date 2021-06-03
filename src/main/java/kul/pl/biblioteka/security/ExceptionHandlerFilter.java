@@ -8,6 +8,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import kul.pl.biblioteka.exception.ApiException;
 import kul.pl.biblioteka.exception.InvalidTokenException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -39,6 +40,14 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
           response.setStatus(status.value());
           response.getWriter().write(convertObjectToJson(errorResponse));
             response.addHeader("Content-Type", "application/json");
+        }
+        catch (LockedException e){
+          HttpStatus status = HttpStatus.LOCKED;
+          ApiException errorResponse = createExceptionBody(status, e.getMessage(), request.getRequestURI());
+
+          response.setStatus(status.value());
+          response.getWriter().write(convertObjectToJson(errorResponse));
+          response.addHeader("Content-Type", "application/json");
         }
         catch (Exception e){
             HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;

@@ -17,9 +17,11 @@ public class Message {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
   private String author;
+  @Enumerated(EnumType.STRING)
   private MessageType title;
   private String message;
   private Date dateIssued;
+  @Enumerated(EnumType.STRING)
   private MessageStatus status;
 
   public Message() {

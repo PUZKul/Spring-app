@@ -86,4 +86,22 @@ public interface LibraryUserRepository extends CrudRepository<LibraryUser, UUID>
 
   @Query(value = "SELECT u FROM LibraryUser u")
   Page<LibraryUser> findAll(Pageable pageable);
+
+  @Query(value = "Select is_banned from users where nick = ?", nativeQuery = true)
+  boolean isBanned(String username);
+
+  @Transactional
+  @Modifying
+  @Query(value = "UPDATE users SET comment = ? WHERE nick = ?", nativeQuery = true )
+  void setComment(String comment, String username);
+
+  @Transactional
+  @Modifying
+  @Query(value = "update users set warnings = 0 where nick = ?", nativeQuery = true)
+  void cleanWarnings(String username);
+
+  @Transactional
+  @Modifying
+  @Query(value = "update users set is_banned = false where nick = ?", nativeQuery = true)
+  void setUnBanned(String username);
 }

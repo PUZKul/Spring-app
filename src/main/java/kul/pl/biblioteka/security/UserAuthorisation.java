@@ -2,21 +2,14 @@ package kul.pl.biblioteka.security;
 
 import kul.pl.biblioteka.model.LibraryUser;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Set;
-import java.util.UUID;
 
 
 public class UserAuthorisation implements UserDetails {
 
-    private LibraryUser user;
+    private final LibraryUser user;
 
     public UserAuthorisation(LibraryUser user) {
         this.user = user;

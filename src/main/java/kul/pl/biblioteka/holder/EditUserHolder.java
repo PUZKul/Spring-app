@@ -12,5 +12,6 @@ public class EditUserHolder {
     private String lastName;
     private String address;
     private String phone;
+    private String comment;
     private String oldPassword;
 }

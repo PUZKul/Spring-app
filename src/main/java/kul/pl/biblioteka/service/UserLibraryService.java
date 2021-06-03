@@ -206,6 +206,10 @@ public class UserLibraryService {
         .build();
   }
 
+  public boolean isBanned(String username){
+    return userRepository.isBanned(username);
+  }
+
   public Optional<LibraryUser> getUserByUsername(String name) {
     return Optional.ofNullable(userRepository.getUserByUsername(name));
   }

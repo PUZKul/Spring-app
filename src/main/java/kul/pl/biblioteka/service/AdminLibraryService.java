@@ -9,13 +9,11 @@ import kul.pl.biblioteka.exception.ResourceNotFoundException;
 import kul.pl.biblioteka.holder.IncreaseLimit;
 import kul.pl.biblioteka.holder.ReservationHolder;
 import kul.pl.biblioteka.holder.UserBookHolder;
-import kul.pl.biblioteka.model.BookReservation;
-import kul.pl.biblioteka.model.LibraryUser;
-import kul.pl.biblioteka.model.Message;
-import kul.pl.biblioteka.model.UserBook;
+import kul.pl.biblioteka.model.*;
 import kul.pl.biblioteka.repository.*;
 import kul.pl.biblioteka.schedule.Scheduler;
 import kul.pl.biblioteka.utils.LibraryPage;
+import kul.pl.biblioteka.utils.MessageStatus;
 import kul.pl.biblioteka.utils.ReservationState;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static kul.pl.biblioteka.utils.BlackListStatus.BLOCKED;
 import static kul.pl.biblioteka.utils.Helper.addDaysFromToday;
 import static kul.pl.biblioteka.utils.Helper.isNullOrEmpty;
 import static kul.pl.biblioteka.utils.ReservationState.WAITING;
@@ -38,7 +37,38 @@ public class AdminLibraryService {
   private final BookCopiesRepository bookCopiesRepository;
   private final ReservationRepository reservationRepository;
   private final MessageRepository messageRepository;
+  private final BlackListRepository blackListRepository;
   private final Scheduler scheduler;
+
+  public void activateAccount(String username) {
+    UUID userId = getUserId(username);
+    Optional<BlackList> blackList = blackListRepository.findByUserId(userId);
+    if(blackList.isEmpty()) throw new ResourceNotFoundException("User is not banned");
+    blackListRepository.removeUser(userId);
+    userRepository.cleanWarnings(username);
+    userRepository.setUnBanned(username);
+  }
+
+
+  public void deactivateAccount(String username, String message) {
+    UUID userId = getUserId(username);
+    Optional<BlackList> repository = blackListRepository.findByUserId(userId);
+    if(repository.isPresent()) throw new AlreadyBorrowedException("User is already banned");
+    var blackList = createBlackListElement(userId, message);
+    blackListRepository.save(blackList);
+    userRepository.setBanned(userId);
+  }
+
+  private BlackList createBlackListElement(UUID userId, String comment) {
+    Optional<LibraryUser> user = userRepository.findById(userId);
+    return new BlackList(
+        user.get().getId(),
+        new Date(),
+        null,
+        comment,
+        BLOCKED
+    );
+  }
 
   public long confirmBorrow(long reservationId) {
     Optional<BookReservation> reservation = reservationRepository.findById(reservationId);
@@ -175,7 +205,7 @@ public class AdminLibraryService {
     return userRepository.findById(id);
   }
 
-  private UUID getUserId(String username) {
+  public UUID getUserId(String username) {
     LibraryUser user = userRepository.getUserByUsername(username);
     if (user == null)
       throw new ResourceNotFoundException("Given username not exist");
@@ -189,7 +219,25 @@ public class AdminLibraryService {
       allRequests = messageRepository.findAllRequests(pageable);
     else
       allRequests = messageRepository.findAllRequestsByUsername(username, pageable);
+
+    if(allRequests.getContent().size() == 0) throw new ResourceNotFoundException("Not found");
     return allRequests.getContent();
+  }
+
+  public void rejectRequest(long id) {
+    Optional<Message> message = messageRepository.findById(id);
+    if(message.isEmpty()) throw new ResourceNotFoundException("Not found");
+    if(message.get().getStatus() == MessageStatus.REFUSED) throw new IllegalArgumentException("Already Rejected");
+
+    messageRepository.changeStatus(MessageStatus.REFUSED, id);
+  }
+
+  public void confirmRequest(long id) {
+    Optional<Message> message = messageRepository.findById(id);
+    if(message.isEmpty()) throw new ResourceNotFoundException("Not found");
+    if(message.get().getStatus() == MessageStatus.APPROVED) throw new IllegalArgumentException("Already confirmed");
+
+    messageRepository.changeStatus(MessageStatus.APPROVED, id);
   }
 
   public void increaseLimit(IncreaseLimit holder, String username) {
@@ -197,6 +245,7 @@ public class AdminLibraryService {
     if (user == null)
       throw new ResourceNotFoundException("Username not found");
 
+    if (holder.getLimit() > 20) throw new IllegalArgumentException("Limit cannot be greater than 20");
     UUID userId = getUserId(username);
     userRepository.changeBookLimit(holder.getLimit(), userId);
     if (!isNullOrEmpty(holder.getComment()))
@@ -213,4 +262,7 @@ public class AdminLibraryService {
     if(all.getContent().size() == 0) throw new ResourceNotFoundException("Not found");
     return all.getContent();
   }
+
+
+
 }

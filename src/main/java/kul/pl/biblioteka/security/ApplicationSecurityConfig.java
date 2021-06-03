@@ -14,6 +14,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsChecker;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -25,11 +27,13 @@ import java.util.Arrays;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final AuthorisationService authUserService;
+    private final UserDetailsService authUserService;
     private final JwtConfig jwtConfig;
 
+
     @Autowired
-    public ApplicationSecurityConfig(AuthorisationService authUserService, JwtConfig jwtConfig) {
+    public ApplicationSecurityConfig(
+        AuthorisationService authUserService, JwtConfig jwtConfig) {
         this.authUserService = authUserService;
         this.jwtConfig = jwtConfig;
     }
@@ -58,15 +62,16 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     @Override
-    protected void configure(AuthenticationManagerBuilder auth){
+    protected void configure(AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(daoAuthenticationProvider());
     }
 
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setPasswordEncoder(PasswordConfig.encoder());
         provider.setUserDetailsService(authUserService);
+        provider.setPasswordEncoder(PasswordConfig.encoder());
+        provider.setPreAuthenticationChecks(userDetailsChecker());
         return provider;
     }
 
@@ -80,6 +85,11 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
+    }
+
+    @Bean
+    public UserDetailsChecker userDetailsChecker(){
+      return new DefaultPreAuthenticationChecks();
     }
 
 }

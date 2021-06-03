@@ -2,6 +2,7 @@ package kul.pl.biblioteka.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -115,6 +116,20 @@ public class ApiExceptionHandler {
   public ResponseEntity<Object> handlerAlreadyBorrowedException(HttpServletRequest req, AlreadyBorrowedException e){
 
     HttpStatus status = HttpStatus.CONFLICT;
+    ApiException exception = new ApiException(
+        ZonedDateTime.now(ZoneId.of("Z")),
+        status.value(),
+        status.name(),
+        e.getMessage(),
+        req.getRequestURI()
+    );
+    return new ResponseEntity<>(exception, status);
+  }
+
+  @ExceptionHandler(value = { LockedException.class})
+  public ResponseEntity<Object> handlerLockedException(HttpServletRequest req, LockedException e){
+
+    HttpStatus status = HttpStatus.LOCKED;
     ApiException exception = new ApiException(
         ZonedDateTime.now(ZoneId.of("Z")),
         status.value(),

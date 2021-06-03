@@ -71,6 +71,11 @@ public class AdminLibraryController {
     return service.getUserDataById(userId);
   }
 
+  @GetMapping("/users/getUserId/{username}")
+  public UUID getUserId(@PathVariable("username") String username){
+    return service.getUserId(username);
+  }
+
   @PostMapping("/users/edit/{username}")
   public void editUserData(
       @RequestBody EditUserHolder holder, @PathVariable("username") String username) {
@@ -86,7 +91,17 @@ public class AdminLibraryController {
     return service.getLimitRequests(offset, limit, username);
   }
 
-  @PostMapping("/users/{username}/bookLimit}")
+  @PostMapping("/requests/reject/{id}")
+  public void rejectRequest(@PathVariable("id") long id){
+    service.rejectRequest(id);
+  }
+
+  @PostMapping("/requests/confirm/{id}")
+  public void confirmRequest(@PathVariable("id") long id){
+    service.confirmRequest(id);
+  }
+
+  @PostMapping("/users/{username}/bookLimit")
   public void increaseLimit(
       @RequestBody IncreaseLimit holder, @PathVariable("username") String username) {
     service.increaseLimit(holder, username);
@@ -100,5 +115,16 @@ public class AdminLibraryController {
     int offset = page * limit;
     return service.getBookRental(offset, limit, username);
   }
+
+  @GetMapping("/users/{username}/activate")
+  public void activateUser(@PathVariable("username") String username){
+    service.activateAccount(username);
+  }
+
+  @GetMapping("/users/{username}/deactivate/{message}")
+  public void deactivateUser(@PathVariable("username") String username, @PathVariable("message") String message){
+    service.deactivateAccount(username, message);
+  }
+
 
 }

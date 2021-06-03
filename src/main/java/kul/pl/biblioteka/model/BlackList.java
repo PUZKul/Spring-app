@@ -20,6 +20,7 @@ public class BlackList {
     private Date dateFrom;
     private Date dateTo;
     private String comment;
+    @Enumerated(EnumType.STRING)
     private BlackListStatus status;
 
   public BlackList() {
