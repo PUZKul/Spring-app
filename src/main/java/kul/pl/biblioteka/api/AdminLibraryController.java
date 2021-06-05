@@ -9,6 +9,7 @@ import kul.pl.biblioteka.model.Message;
 import kul.pl.biblioteka.service.AdminLibraryService;
 import kul.pl.biblioteka.utils.JSONFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,7 +39,7 @@ public class AdminLibraryController {
   }
 
   @GetMapping("/reservations")
-  public List<ReservationHolder> getWaitingReservations(
+  public Page<ReservationHolder> getWaitingReservations(
       @RequestParam("limit") int limit,
       @RequestParam("page") int page,
       @RequestParam(value = "username", required = false) String username) {
@@ -58,7 +59,7 @@ public class AdminLibraryController {
   }
 
   @GetMapping("/users")
-  public List<LibraryUser> getUsers(
+  public Page<LibraryUser> getUsers(
       @RequestParam("limit") int limit,
       @RequestParam("page") int page,
       @RequestParam(value = "username", required = false) String username) {

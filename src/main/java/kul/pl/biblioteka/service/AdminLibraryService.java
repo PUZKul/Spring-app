@@ -16,7 +16,9 @@ import kul.pl.biblioteka.utils.LibraryPage;
 import kul.pl.biblioteka.utils.MessageStatus;
 import kul.pl.biblioteka.utils.ReservationState;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -90,6 +92,7 @@ public class AdminLibraryService {
         addDaysFromToday(30));
     UserBook save = userBookRepository.save(userBook);
     reservationRepository.changeStatus(reservation.get().getId(), ReservationState.BORROWED);
+
     return save.getId();
   }
 
@@ -114,7 +117,7 @@ public class AdminLibraryService {
     userDataUpdater.update(user, username);
   }
 
-  public List<ReservationHolder> getReservationList(int offset, int limit, String username) {
+  public Page<ReservationHolder> getReservationList(int offset, int limit, String username) {
     scheduler.checkReservations();
     Pageable pageable = new LibraryPage(offset, limit);
     Page<BookReservation> reservations;
@@ -124,13 +127,15 @@ public class AdminLibraryService {
       reservations =
           reservationRepository.findByStateAndUserId(WAITING, getUserId(username), pageable);
 
-    return createHolder(reservations);
+    if (reservations.isEmpty())
+      throw new ResourceNotFoundException("Not found!");
+    return new PageImpl<>(createHolder(reservations), pageable, limit);
   }
 
   public List<UserBookHolder> getBookRental(int offset, int limit, String username) {
     scheduler.checkBorrowedBooks();
 
-    Pageable pageable = new LibraryPage(offset, limit);
+    Pageable pageable = new LibraryPage(offset, limit, Direction.DESC, "dateIssued");
     Page<UserBook> rentals;
     if (isNullOrEmpty(username))
       rentals = userBookRepository.findCurrent(pageable);
@@ -213,7 +218,7 @@ public class AdminLibraryService {
   }
 
   public List<Message> getLimitRequests(int offset, int limit, String username) {
-    Pageable pageable = new LibraryPage(offset, limit);
+    Pageable pageable = new LibraryPage(offset, limit, Direction.DESC, "date_issued");
     Page<Message> allRequests;
     if (isNullOrEmpty(username))
       allRequests = messageRepository.findAllRequests(pageable);
@@ -227,9 +232,9 @@ public class AdminLibraryService {
   public void rejectRequest(long id) {
     Optional<Message> message = messageRepository.findById(id);
     if(message.isEmpty()) throw new ResourceNotFoundException("Not found");
-    if(message.get().getStatus() == MessageStatus.REFUSED) throw new IllegalArgumentException("Already Rejected");
+    if(message.get().getStatus() == MessageStatus.REJECTED) throw new IllegalArgumentException("Already Rejected");
 
-    messageRepository.changeStatus(MessageStatus.REFUSED, id);
+    messageRepository.changeStatus(MessageStatus.REJECTED, id);
   }
 
   public void confirmRequest(long id) {
@@ -252,15 +257,15 @@ public class AdminLibraryService {
       userRepository.setComment(holder.getComment(), userId);
   }
 
-  public List<LibraryUser> getUsers(int offset, int limit, String username) {
-    Pageable pageable = new LibraryPage(offset, limit);
+  public Page<LibraryUser> getUsers(int offset, int limit, String username) {
+    Pageable pageable = new LibraryPage(offset, limit, Direction.ASC,"username");
     Page<LibraryUser> all;
     if (isNullOrEmpty(username))
       all =  userRepository.findAll(pageable);
     else
       all = userRepository.findAllByName(username, pageable);
     if(all.getContent().size() == 0) throw new ResourceNotFoundException("Not found");
-    return all.getContent();
+    return all;
   }
 
 

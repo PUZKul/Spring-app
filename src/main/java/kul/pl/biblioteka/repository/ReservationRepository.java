@@ -23,7 +23,7 @@ public interface ReservationRepository extends JpaRepository<BookReservation, Lo
 
   @Transactional
   @Modifying
-  @Query("UPDATE BookReservation r SET r.state = :state WHERE r.id = :id")
+  @Query("UPDATE BookReservation r SET r.state = :state, r.dateBorrow = current_date WHERE r.id = :id")
   void changeStatus(@Param("id") long reservationId, @Param("state") ReservationState state);
 
   @Query("SELECT r FROM BookReservation r WHERE r.state = :state")

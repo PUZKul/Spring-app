@@ -81,8 +81,8 @@ public interface LibraryUserRepository extends CrudRepository<LibraryUser, UUID>
   @Query(value = "UPDATE users SET comment = ? WHERE id = ?", nativeQuery = true )
   void setComment(String comment, UUID userId);
 
-  @Query(value = "SELECT * FROM users where nick like ?%", nativeQuery = true)
-  Page<LibraryUser> findAllByName(String username, Pageable pageable);
+  @Query("SELECT u FROM LibraryUser  u where u.username like :username%")
+  Page<LibraryUser> findAllByName(@Param("username") String username, Pageable pageable);
 
   @Query(value = "SELECT u FROM LibraryUser u")
   Page<LibraryUser> findAll(Pageable pageable);
